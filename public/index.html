@@ -96,15 +96,25 @@
 
   /* Timeline nodes load in left-to-right instead of fading as one block --
      the container itself stays visible (overriding the generic .rv fade),
-     only its .tnode children animate, staggered by nth-child order. */
+     only its .tnode children animate, staggered by nth-child order. Icon
+     and label move independently (icon pops in with a scale, label rises
+     right after) so the sequence reads as a clear entrance, not a quick
+     blend-in that's easy to miss on a normal scroll. */
   .js .timeline-nodes.rv{opacity:1;transform:none;}
-  .js .timeline-nodes.rv .tnode{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease;}
-  .js .timeline-nodes.rv.in .tnode{opacity:1;transform:none;}
-  .timeline-nodes.rv .tnode:nth-child(1){transition-delay:0s;}
-  .timeline-nodes.rv .tnode:nth-child(2){transition-delay:.12s;}
-  .timeline-nodes.rv .tnode:nth-child(3){transition-delay:.24s;}
-  .timeline-nodes.rv .tnode:nth-child(4){transition-delay:.36s;}
-  .timeline-nodes.rv .tnode:nth-child(5){transition-delay:.48s;}
+  .js .timeline-nodes.rv .tnode .icon{opacity:0;transform:translateY(28px) scale(.5);transition:opacity .55s cubic-bezier(.2,.8,.2,1.4),transform .55s cubic-bezier(.2,.8,.2,1.4);}
+  .js .timeline-nodes.rv .tnode .label{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease;}
+  .js .timeline-nodes.rv.in .tnode .icon{opacity:1;transform:none;}
+  .js .timeline-nodes.rv.in .tnode .label{opacity:1;transform:none;}
+  .timeline-nodes.rv .tnode:nth-child(1) .icon{transition-delay:0s;}
+  .timeline-nodes.rv .tnode:nth-child(1) .label{transition-delay:.12s;}
+  .timeline-nodes.rv .tnode:nth-child(2) .icon{transition-delay:.22s;}
+  .timeline-nodes.rv .tnode:nth-child(2) .label{transition-delay:.34s;}
+  .timeline-nodes.rv .tnode:nth-child(3) .icon{transition-delay:.44s;}
+  .timeline-nodes.rv .tnode:nth-child(3) .label{transition-delay:.56s;}
+  .timeline-nodes.rv .tnode:nth-child(4) .icon{transition-delay:.66s;}
+  .timeline-nodes.rv .tnode:nth-child(4) .label{transition-delay:.78s;}
+  .timeline-nodes.rv .tnode:nth-child(5) .icon{transition-delay:.88s;}
+  .timeline-nodes.rv .tnode:nth-child(5) .label{transition-delay:1s;}
 
   .team{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:40px 0;}
   .person{border-top:2px solid var(--euc);padding-top:14px;}
