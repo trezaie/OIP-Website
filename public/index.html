@@ -230,6 +230,31 @@
     .hero-grid .ring-stage{width:96px !important;height:96px !important;}
     .hero-grid .tag-stack{transform:scale(.78);transform-origin:top center;margin-top:6px !important;}
   }
+
+  /* ===== Book-a-call modal ===== */
+  .modal-overlay{position:fixed;inset:0;background:rgba(30,38,36,0.55);display:flex;align-items:center;justify-content:center;padding:24px;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s ease;}
+  .modal-overlay.open{opacity:1;pointer-events:auto;}
+  .modal-card{background:var(--card);border-radius:20px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;padding:36px 32px;position:relative;box-shadow:0 30px 80px rgba(30,38,36,0.25);transform:translateY(16px);transition:transform .25s ease;}
+  .modal-overlay.open .modal-card{transform:translateY(0);}
+  .modal-close{position:absolute;top:18px;right:18px;width:32px;height:32px;border-radius:50%;border:none;background:var(--paper);color:var(--text-muted);font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .modal-close:hover{background:var(--line);}
+  .modal-title{font-size:24px;margin-top:8px;}
+  .modal-sub{color:var(--text-muted);font-size:14.5px;margin-top:10px;margin-bottom:26px;}
+  .form-row{margin-bottom:16px;}
+  .form-row label{display:block;font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:6px;}
+  .form-row .optional{text-transform:none;letter-spacing:0;font-weight:400;}
+  .form-row input,.form-row select{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:8px;font-family:var(--body);font-size:15px;color:var(--text);background:var(--paper);}
+  .form-row input:focus,.form-row select:focus{outline:2px solid var(--euc);outline-offset:1px;border-color:var(--euc);}
+  .modal-submit{width:100%;justify-content:center;margin-top:10px;border:none;cursor:pointer;font-size:14px;}
+  .modal-submit:disabled{opacity:.6;cursor:default;}
+  .modal-error{color:var(--orange-deep);font-size:13px;margin-top:12px;text-align:center;}
+  .modal-success{text-align:center;padding:16px 0 8px;}
+  .modal-success-title{font-family:var(--display);font-weight:600;font-size:20px;color:var(--euc-deep);}
+  .modal-success-sub{color:var(--text-muted);margin-top:8px;font-size:14.5px;}
+  body.modal-lock{overflow:hidden;}
+  @media(max-width:520px){
+    .modal-card{padding:28px 22px;}
+  }
 </style>
 </head>
 <body>
@@ -242,7 +267,7 @@
       <a href="#why">Why it matters</a>
       <a href="#who">Who we are</a>
     </div>
-    <a class="btn primary" href="#book"><span class="full">Book a discussion</span><span class="short">Book a call</span></a>
+    <a class="btn primary js-book-call" href="#book"><span class="full">Book a discussion</span><span class="short">Book a call</span></a>
   </div>
 </nav>
 
@@ -382,9 +407,69 @@
     <p class="eyebrow rv no-marker">Get started</p>
     <h2 class="rv">Wherever you're starting, let's talk.</h2>
     <p class="lede rv">Tell us where you are, and we'll figure out the right next step together.</p>
-    <a class="btn primary rv" href="#">Book a call ↗</a>
+    <a class="btn primary rv js-book-call" href="#">Book a call ↗</a>
   </div>
 </section>
+
+<div class="modal-overlay" id="bookModal" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button type="button" class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    <p class="eyebrow no-marker">Get started</p>
+    <h2 id="modalTitle" class="modal-title">Book a call</h2>
+    <p class="modal-sub">Tell us a bit about your business and we will follow up to find a time.</p>
+
+    <form id="bookForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+      <input type="hidden" name="_subject" value="New Book a Call request">
+      <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+      <div class="form-row">
+        <label for="f-name">Name</label>
+        <input type="text" id="f-name" name="name" required>
+      </div>
+      <div class="form-row">
+        <label for="f-email">Email</label>
+        <input type="email" id="f-email" name="email" required>
+      </div>
+      <div class="form-row">
+        <label for="f-company">Company</label>
+        <input type="text" id="f-company" name="company" required>
+      </div>
+      <div class="form-row">
+        <label for="f-phone">Phone <span class="optional">(optional)</span></label>
+        <input type="tel" id="f-phone" name="phone">
+      </div>
+      <div class="form-row">
+        <label for="f-industry">Industry</label>
+        <select id="f-industry" name="industry" required>
+          <option value="" disabled selected>Select one</option>
+          <option>Legal</option>
+          <option>Construction / AEC</option>
+          <option>Professional services</option>
+          <option>Healthcare</option>
+          <option>Financial services</option>
+          <option>Manufacturing</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="f-topic">What are you looking for help with?</label>
+        <select id="f-topic" name="help_topic" required>
+          <option value="" disabled selected>Select one</option>
+          <option>Not sure where AI fits yet</option>
+          <option>Evaluating a specific tool</option>
+          <option>Ready to move forward on something specific</option>
+          <option>Something else</option>
+        </select>
+      </div>
+      <button type="submit" class="btn primary modal-submit">Book a call ↗</button>
+      <p class="modal-error" id="modalError" hidden>Something went wrong. Please try again, or email us directly.</p>
+    </form>
+
+    <div class="modal-success" id="modalSuccess" hidden>
+      <p class="modal-success-title">Thanks, we will be in touch shortly.</p>
+      <p class="modal-success-sub">We usually respond within one business day.</p>
+    </div>
+  </div>
+</div>
 
 <footer class="site">
   <div class="wrap foot-in">
@@ -426,6 +511,65 @@
     },{threshold:0.12});
     rv.forEach(function(el){ io.observe(el); });
   } else { rv.forEach(function(el){ el.classList.add('in'); }); }
+})();
+
+(function(){
+  var overlay = document.getElementById('bookModal');
+  var closeBtn = document.getElementById('modalClose');
+  var form = document.getElementById('bookForm');
+  var errorEl = document.getElementById('modalError');
+  var successEl = document.getElementById('modalSuccess');
+  if(!overlay || !form) return;
+  var lastFocused = null;
+
+  function openModal(e){
+    if(e) e.preventDefault();
+    lastFocused = document.activeElement;
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-lock');
+    var firstField = document.getElementById('f-name');
+    if(firstField) firstField.focus();
+  }
+  function closeModal(){
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-lock');
+    if(lastFocused && lastFocused.focus) lastFocused.focus();
+  }
+
+  document.querySelectorAll('.js-book-call').forEach(function(btn){
+    btn.addEventListener('click', openModal);
+  });
+  closeBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', function(e){ if(e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
+  });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    errorEl.hidden = true;
+    var submitBtn = form.querySelector('.modal-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    }).then(function(res){
+      if(res.ok){
+        form.hidden = true;
+        successEl.hidden = false;
+      } else {
+        throw new Error('bad status');
+      }
+    }).catch(function(){
+      errorEl.hidden = false;
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Book a call ↗';
+    });
+  });
 })();
 </script>
 </body>
