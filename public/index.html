@@ -216,6 +216,20 @@
   @media(max-width:640px){
     header.hero{padding:56px 0 20px;}
   }
+  /* Below md (768px, matching the Tailwind grid-cols breakpoint), the
+     eyebrow sits left of a smaller ring instead of both stacking full
+     width -- .hero-text-col is unwrapped via display:contents so its
+     children (h1, eyebrow) join the outer grid directly alongside the
+     ring column, which stays as its own grid item. */
+  @media(max-width:767px){
+    .hero-grid{display:grid;grid-template-columns:1fr auto;grid-template-areas:"headline headline" "eyebrow ring";column-gap:16px;row-gap:0;align-items:center;}
+    .hero-text-col{display:contents;}
+    .hero-grid h1{grid-area:headline;}
+    .hero-grid .eyebrow{grid-area:eyebrow;margin-top:18px !important;justify-content:flex-start;}
+    .hero-grid .ring-col{grid-area:ring;margin-top:18px;}
+    .hero-grid .ring-stage{width:96px !important;height:96px !important;}
+    .hero-grid .tag-stack{transform:scale(.78);transform-origin:top center;margin-top:6px !important;}
+  }
 </style>
 </head>
 <body>
@@ -235,13 +249,13 @@
 <header class="hero" id="top">
   <div class="wrap">
     <div class="rv bg-card border border-line rounded-[24px] shadow-[0_20px_50px_rgba(30,38,36,0.08)] px-6 py-10 md:px-12 md:py-12">
-      <div class="grid md:grid-cols-[1.15fr_1fr] gap-8 md:gap-12 items-center">
-        <div>
+      <div class="hero-grid grid md:grid-cols-[1.15fr_1fr] gap-8 md:gap-12 items-center">
+        <div class="hero-text-col">
           <h1>Not sure where AI fits in your business? We'll show you, <em>then help you turn it into a strategic edge</em>.</h1>
           <p class="eyebrow no-marker" style="margin-top:20px;">AI implementation, wherever you're starting from</p>
         </div>
 
-        <div class="text-center">
+        <div class="text-center ring-col">
           <div class="ring-stage w-[150px] h-[150px] md:w-[220px] md:h-[220px] mx-auto">
             <svg width="100%" height="100%" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M 52.02,167.98 A 82,82 0 1 1 167.98,167.98" stroke="#DDE2DB" stroke-width="14" stroke-linecap="round"/>
