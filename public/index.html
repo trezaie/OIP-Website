@@ -67,22 +67,11 @@
   .why-label{font-family:var(--display);font-weight:600;font-size:17px;color:var(--text);margin:0 0 16px;}
   .stats.stats-2{grid-template-columns:repeat(2,1fr);}
 
-  /* section bands, break up the page so it doesn't read as one long document */
-  #fit,#who{background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
-
-  #why{background:var(--ink);color:var(--on-ink);}
-  #why .eyebrow{color:var(--gold-bright);}
-  #why .act-head h2{color:var(--on-ink);}
-  #why .act-head p.sub{color:var(--on-ink-muted);}
-  #why .why-label{color:var(--on-ink);}
-  #why .stats{background:var(--line-dark);border-color:var(--line-dark);}
-  #why .stat{background:var(--ink-2);}
-  #why .stat .n{color:var(--gold-bright);}
-  #why .stat .what{color:var(--on-ink);}
-  #why .stat .src{color:var(--on-ink-muted);border-top-color:var(--line-dark);}
-  #why .kicker{color:var(--gold-bright);border-left-color:var(--gold-bright);}
-  #why .more-link{color:var(--gold-bright);border-color:var(--gold-bright);}
-  #why .more-link:hover{color:var(--gold-bright);border-color:var(--gold);}
+  /* Only one deliberate dark section on the whole page now (the final
+     CTA below) -- everything else, including Why-it-matters, stays on
+     the same paper tone and relies on the divider lines/eyebrows to
+     signal a new section instead of a color block. */
+  #fit,#who,#why{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
 
   /* ===== Bold connected path (replaces the old thin-line timeline) ===== */
   .path{position:relative;margin:56px 0 10px;}
@@ -156,7 +145,7 @@
   .team.rv .person:nth-child(3) p{transition-delay:.95s;}
   .person p{margin:0;font-size:14.5px;color:var(--text-muted);}
 
-  #book{text-align:center;background:var(--euc-deep);color:var(--on-ink);}
+  #book{text-align:center;background:var(--ink);color:var(--on-ink);}
   #book .eyebrow{color:var(--gold-bright);}
   #book h2{font-size:clamp(28px,4vw,42px);max-width:20ch;margin:14px auto 0;font-weight:600;}
   #book .lede{color:#B4C1BC;max-width:50ch;margin:18px auto 28px;font-size:16.5px;}
@@ -198,7 +187,7 @@
     .node .badge{grid-column:1;grid-row:1/3;width:56px;height:56px;justify-self:auto;}
     .node .badge svg{width:22px;height:22px;}
     .node h3{grid-column:2;grid-row:1;margin:0;text-align:left;justify-self:auto;}
-    .node p{grid-column:2;grid-row:2;max-width:none;justify-self:auto;}
+    .node p{grid-column:2;grid-row:2;max-width:none;text-align:left;justify-self:auto;}
   }
   @media(max-width:1100px){
     .nav-links{display:none;}
