@@ -94,6 +94,18 @@
   .tnode.up .label{bottom:calc(100% + 14px);}
   .tnode.down .label{top:calc(100% + 14px);}
 
+  /* Timeline nodes load in left-to-right instead of fading as one block --
+     the container itself stays visible (overriding the generic .rv fade),
+     only its .tnode children animate, staggered by nth-child order. */
+  .js .timeline-nodes.rv{opacity:1;transform:none;}
+  .js .timeline-nodes.rv .tnode{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease;}
+  .js .timeline-nodes.rv.in .tnode{opacity:1;transform:none;}
+  .timeline-nodes.rv .tnode:nth-child(1){transition-delay:0s;}
+  .timeline-nodes.rv .tnode:nth-child(2){transition-delay:.12s;}
+  .timeline-nodes.rv .tnode:nth-child(3){transition-delay:.24s;}
+  .timeline-nodes.rv .tnode:nth-child(4){transition-delay:.36s;}
+  .timeline-nodes.rv .tnode:nth-child(5){transition-delay:.48s;}
+
   .team{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:40px 0;}
   .person{border-top:2px solid var(--euc);padding-top:14px;}
   .person h3{font-size:17px;margin:0 0 6px;font-weight:600;}
@@ -168,36 +180,36 @@
 
 <header class="hero" id="top">
   <div class="wrap">
-    <div class="grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center">
-      <div>
-        <p class="eyebrow rv">AI implementation, wherever you're starting from</p>
-        <h1 class="rv">Not sure where AI fits in your business? We'll show you, <em>then help you turn it into an edge</em>.</h1>
-        <p class="lede rv">We'll help you find the right next step, then make sure the AI you put in place actually works.</p>
-      </div>
-
-      <div class="rv mx-auto lg:mx-0 w-full max-w-[300px] bg-card border border-line rounded-[20px] px-8 pt-10 pb-8 text-center shadow-[0_20px_50px_rgba(30,38,36,0.08)]">
-        <div class="font-mono text-[13px] font-semibold text-text-muted uppercase tracking-[0.06em] mb-6">How every AI Match Check&trade; resolves</div>
-        <div class="ring-stage w-[220px] h-[220px] mx-auto">
-          <svg class="s1" width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M 52.02,167.98 A 82,82 0 1 1 167.98,167.98" stroke="#DDE2DB" stroke-width="14" stroke-linecap="round"/>
-            <path d="M 52.02,167.98 A 82,82 0 0 1 28.65,120.28" stroke="#8A3A2F" stroke-width="14" stroke-linecap="round"/>
-            <rect x="19.15" y="110.78" width="19" height="19" rx="1.9" transform="rotate(90 28.65 120.28)" fill="#8A3A2F" stroke="#fff" stroke-width="2.5"/>
-          </svg>
-          <svg class="s2" width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M 52.02,167.98 A 82,82 0 1 1 167.98,167.98" stroke="#DDE2DB" stroke-width="14" stroke-linecap="round"/>
-            <path d="M 52.02,167.98 A 82,82 0 0 1 132.88,31.26" stroke="#8A6A1F" stroke-width="14" stroke-linecap="round"/>
-            <rect x="123.38" y="21.76" width="19" height="19" rx="1.9" transform="rotate(90 132.88 31.26)" fill="#8A6A1F" stroke="#fff" stroke-width="2.5"/>
-          </svg>
-          <svg class="s3" width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M 52.02,167.98 A 82,82 0 1 1 167.98,167.98" stroke="#DDE2DB" stroke-width="14" stroke-linecap="round"/>
-            <path d="M 52.02,167.98 A 82,82 0 1 1 167.98,167.98" stroke="#1E2624" stroke-width="14" stroke-linecap="round"/>
-            <rect x="158.48" y="158.48" width="19" height="19" rx="1.9" transform="rotate(45 167.98 167.98)" fill="#4F7F6D" stroke="#fff" stroke-width="2.5"/>
-          </svg>
+    <div class="rv bg-card border border-line rounded-[24px] shadow-[0_20px_50px_rgba(30,38,36,0.08)] px-6 py-10 md:px-12 md:py-12">
+      <div class="grid md:grid-cols-[1.15fr_1fr] gap-8 md:gap-12 items-center">
+        <div>
+          <p class="eyebrow">AI implementation, wherever you're starting from</p>
+          <h1>Not sure where AI fits in your business? We'll show you, <em>then help you turn it into an edge</em>.</h1>
         </div>
-        <div class="tag-stack h-[26px] mt-[22px]">
-          <span class="tag t1">NOT YET</span>
-          <span class="tag t2">READY WITH MINOR GAPS</span>
-          <span class="tag t3">READY NOW</span>
+
+        <div class="text-center">
+          <div class="ring-stage w-[150px] h-[150px] md:w-[220px] md:h-[220px] mx-auto">
+            <svg class="s1" width="100%" height="100%" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 52.02,167.98 A 82,82 0 1 1 167.98,167.98" stroke="#DDE2DB" stroke-width="14" stroke-linecap="round"/>
+              <path d="M 52.02,167.98 A 82,82 0 0 1 28.65,120.28" stroke="#8A3A2F" stroke-width="14" stroke-linecap="round"/>
+              <rect x="19.15" y="110.78" width="19" height="19" rx="1.9" transform="rotate(90 28.65 120.28)" fill="#8A3A2F" stroke="#fff" stroke-width="2.5"/>
+            </svg>
+            <svg class="s2" width="100%" height="100%" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 52.02,167.98 A 82,82 0 1 1 167.98,167.98" stroke="#DDE2DB" stroke-width="14" stroke-linecap="round"/>
+              <path d="M 52.02,167.98 A 82,82 0 0 1 132.88,31.26" stroke="#8A6A1F" stroke-width="14" stroke-linecap="round"/>
+              <rect x="123.38" y="21.76" width="19" height="19" rx="1.9" transform="rotate(90 132.88 31.26)" fill="#8A6A1F" stroke="#fff" stroke-width="2.5"/>
+            </svg>
+            <svg class="s3" width="100%" height="100%" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 52.02,167.98 A 82,82 0 1 1 167.98,167.98" stroke="#DDE2DB" stroke-width="14" stroke-linecap="round"/>
+              <path d="M 52.02,167.98 A 82,82 0 1 1 167.98,167.98" stroke="#1E2624" stroke-width="14" stroke-linecap="round"/>
+              <rect x="158.48" y="158.48" width="19" height="19" rx="1.9" transform="rotate(45 167.98 167.98)" fill="#4F7F6D" stroke="#fff" stroke-width="2.5"/>
+            </svg>
+          </div>
+          <div class="tag-stack h-[22px] md:h-[26px] mt-4 md:mt-[22px]">
+            <span class="tag t1">NOT YET</span>
+            <span class="tag t2">READY WITH MINOR GAPS</span>
+            <span class="tag t3">READY NOW</span>
+          </div>
         </div>
       </div>
     </div>
@@ -236,8 +248,8 @@
     <div class="why-block rv">
       <p class="why-label">What happens without the right foundation</p>
       <div class="stats stats-2">
-        <div class="stat"><div class="n">80%+</div><p class="what">of AI projects fail.</p><p class="src">RAND Corporation</p></div>
-        <div class="stat"><div class="n">29%</div><p class="what">of firms trust the data feeding the AI tools they've already adopted.</p><p class="src">Unanet, 2026 AEC Inspire Report</p></div>
+        <div class="stat"><div class="n" data-count="80" data-suffix="%+">80%+</div><p class="what">of AI projects fail.</p><p class="src">RAND Corporation</p></div>
+        <div class="stat"><div class="n" data-count="29" data-suffix="%">29%</div><p class="what">of firms trust the data feeding the AI tools they've already adopted.</p><p class="src">Unanet, 2026 AEC Inspire Report</p></div>
       </div>
       <p class="kicker">The failure point usually isn't the technology. It's the readiness work no one did first.</p>
     </div>
@@ -245,8 +257,8 @@
     <div class="why-block rv">
       <p class="why-label">The upside of doing it right</p>
       <div class="stats stats-2">
-        <div class="stat"><div class="n">35%</div><p class="what">higher revenue growth for firms that redesign workflows around AI.</p><p class="src">Deloitte</p></div>
-        <div class="stat"><div class="n">~3x</div><p class="what">more likely AI's top performers are to have redesigned their workflows first.</p><p class="src">McKinsey, State of AI 2025</p></div>
+        <div class="stat"><div class="n" data-count="35" data-suffix="%">35%</div><p class="what">higher revenue growth for firms that redesign workflows around AI.</p><p class="src">Deloitte</p></div>
+        <div class="stat"><div class="n" data-count="3" data-prefix="~" data-suffix="x">~3x</div><p class="what">more likely AI's top performers are to have redesigned their workflows first.</p><p class="src">McKinsey, State of AI 2025</p></div>
       </div>
       <p class="kicker">The firms that see a return are the ones who let the operations underneath the AI change too.</p>
     </div>
@@ -259,9 +271,9 @@
       <p class="eyebrow">What working with us looks like</p>
       <h2>One team, from the first question to what happens after.</h2>
     </div>
-    <div class="timeline rv">
+    <div class="timeline">
       <div class="timeline-line"></div>
-      <div class="timeline-nodes">
+      <div class="timeline-nodes rv">
         <div class="tnode up">
           <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg></span>
           <span class="label">Find the real opportunity</span>
@@ -323,10 +335,35 @@
 
 <script>
 (function(){
+  // Static text content is already the real final value (see data-count
+  // spans below), so no-JS and pre-animation states both show correct
+  // numbers -- this only overlays a count-up while the element is animating.
+  function animateCount(el){
+    var target = parseFloat(el.getAttribute('data-count'));
+    var prefix = el.getAttribute('data-prefix') || '';
+    var suffix = el.getAttribute('data-suffix') || '';
+    var dur = 1100, start = null;
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = prefix + Math.round(target * eased) + suffix;
+      if(p < 1){ requestAnimationFrame(step); }
+      else { el.textContent = prefix + target + suffix; }
+    }
+    requestAnimationFrame(step);
+  }
+
   var rv = document.querySelectorAll('.rv');
   if('IntersectionObserver' in window){
     var io = new IntersectionObserver(function(es){
-      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+      es.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.classList.add('in');
+          e.target.querySelectorAll('[data-count]').forEach(animateCount);
+          io.unobserve(e.target);
+        }
+      });
     },{threshold:0.12});
     rv.forEach(function(el){ io.observe(el); });
   } else { rv.forEach(function(el){ el.classList.add('in'); }); }
