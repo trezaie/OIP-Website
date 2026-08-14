@@ -87,13 +87,24 @@
   /* ===== Bold connected path (replaces the old thin-line timeline) ===== */
   .path{position:relative;margin:56px 0 10px;}
   .path-line{position:absolute;left:7%;right:7%;top:36px;height:4px;background:var(--euc-bright);border-radius:2px;z-index:0;transform-origin:left center;}
-  .path-nodes{display:flex;position:relative;z-index:1;}
-  .node{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 10px;}
-  .node .badge{position:relative;width:72px;height:72px;border-radius:50%;background:var(--euc-deep);color:#fff;display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 8px 20px rgba(38,68,56,0.18);}
+  /* Grid (not flex) so the three rows -- badges, titles, descriptions --
+     each get a uniform height across all 5 columns automatically, no
+     matter how many lines any individual title/description wraps to at
+     a given width. display:contents on .node unwraps it so its children
+     (badge/h3/p) become direct grid items; grid-auto-flow:column with 3
+     explicit rows fills each node's own column top-to-bottom before
+     moving to the next, so titles all land in row 2 and descriptions
+     all land in row 3 regardless of node width. A fixed min-height was
+     tried first but only held up above ~1200px -- between 900-1150px
+     (a real desktop range, not just mobile) titles and descriptions
+     wrap differently per node and a fixed height doesn't track that. */
+  .path-nodes{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:auto auto auto;grid-auto-flow:column;position:relative;z-index:1;}
+  .node{display:contents;}
+  .node .badge{position:relative;width:72px;height:72px;border-radius:50%;background:var(--euc-deep);color:#fff;display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 8px 20px rgba(38,68,56,0.18);justify-self:center;}
   .node .badge svg{width:28px;height:28px;}
   .node .chip{position:absolute;bottom:-6px;right:-6px;width:26px;height:26px;border-radius:50%;background:var(--gold);color:#fff;font-family:var(--mono);font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid var(--paper);}
-  .node h3{font-size:15.5px;font-weight:600;margin:20px 0 8px;}
-  .node p{font-size:13px;color:var(--text-muted);line-height:1.5;margin:0;max-width:27ch;min-height:58.5px;}
+  .node h3{font-size:15.5px;font-weight:600;margin:20px 0 8px;text-align:center;justify-self:center;}
+  .node p{font-size:13px;color:var(--text-muted);line-height:1.5;margin:0;max-width:27ch;text-align:center;justify-self:center;}
 
   /* The connecting line draws left-to-right first, and each badge pops in
      right as the line reaches its position -- ties the entrance directly
@@ -178,12 +189,16 @@
     section{padding:64px 0;}
     .path{margin:20px 0 0;}
     .path-line{display:none;}
-    .path-nodes{flex-direction:column;gap:32px;}
-    .node{flex-direction:row;text-align:left;align-items:flex-start;gap:18px;padding:0;}
-    .node .badge{flex:none;width:56px;height:56px;}
+    .path-nodes{display:block;}
+    /* Icon spans both text rows on the left; title and description stack
+       in the right column -- a flex row with three bare siblings (badge,
+       h3, p) put the title in its own cramped narrow column beside the
+       description instead of above it, which is what this replaces. */
+    .node{display:grid;grid-template-columns:56px 1fr;column-gap:18px;row-gap:2px;align-items:start;text-align:left;padding:0;margin-bottom:32px;}
+    .node .badge{grid-column:1;grid-row:1/3;width:56px;height:56px;justify-self:auto;}
     .node .badge svg{width:22px;height:22px;}
-    .node h3{margin:2px 0 6px;}
-    .node p{max-width:none;}
+    .node h3{grid-column:2;grid-row:1;margin:0;text-align:left;justify-self:auto;}
+    .node p{grid-column:2;grid-row:2;max-width:none;justify-self:auto;}
   }
   @media(max-width:1100px){
     .nav-links{display:none;}
