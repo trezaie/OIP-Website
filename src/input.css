@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: 'Onest', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  --color-ink: #1E2624;
+  --color-ink-2: #243330;
+  --color-paper: #EDEFEA;
+  --color-card: #FFFFFF;
+
+  --color-line: #C9D0C8;
+  --color-line-dark: rgba(228, 233, 230, 0.14);
+
+  --color-euc: #4F7F6D;
+  --color-euc-deep: #264438;
+  --color-euc-bright: #9DC4B3;
+  --color-slate: #707B78;
+
+  --color-text: #1E2624;
+  --color-text-muted: #5B6663;
+  --color-on-ink: #E8ECE8;
+  --color-on-ink-muted: #9DAAA5;
+
+  --color-gold: #B48A4C;
+  --color-gold-bright: #D2AD73;
+  --color-gold-deep: #6E4F1F;
+
+  --color-orange: #A54A20;
+  --color-orange-bright: #E08A52;
+  --color-orange-deep: #8A431B;
+
+  /* AI Match Check verdict-tier colors, same as the worksheet deliverable */
+  --color-tier-not-yet: #8A3A2F;
+  --color-tier-minor-gaps: #8A6A1F;
+  --color-tier-ready-now: #2F5F3F;
+}
+
+/* ===== Hero ring "GIF" -- loops Not Yet -> Minor Gaps -> Ready Now ===== */
+.ring-stage{position:relative;}
+.ring-stage svg{position:absolute;top:0;left:0;}
+/* Positive delays (not negative) so each stage's window lands LATER in real
+   time -- negative delay fast-forwards into the cycle instead, which puts
+   stages in the wrong order. fill-mode:backwards holds each element's 0%
+   (invisible) keyframe during its own delay so nothing flashes early. */
+.ring-stage .s1{animation:fadeStage 9s infinite;animation-fill-mode:backwards;}
+.ring-stage .s2{animation:fadeStage 9s infinite;animation-delay:3s;animation-fill-mode:backwards;}
+.ring-stage .s3{animation:fadeStage 9s infinite;animation-delay:6s;animation-fill-mode:backwards;}
+@keyframes fadeStage{
+  0%{opacity:0;} 4%{opacity:1;} 29%{opacity:1;} 33%{opacity:0;} 100%{opacity:0;}
+}
+.tag-stack{position:relative;}
+.tag-stack .tag{position:absolute;left:50%;top:0;transform:translateX(-50%);font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.05em;padding:5px 14px;border-radius:20px;white-space:nowrap;}
+.tag.t1{background:rgba(138,58,47,.1);color:var(--color-tier-not-yet);animation:fadeStage 9s infinite;animation-fill-mode:backwards;}
+.tag.t2{background:rgba(138,106,31,.12);color:var(--color-tier-minor-gaps);animation:fadeStage 9s infinite;animation-delay:3s;animation-fill-mode:backwards;}
+.tag.t3{background:rgba(47,95,63,.1);color:var(--color-tier-ready-now);animation:fadeStage 9s infinite;animation-delay:6s;animation-fill-mode:backwards;}
+
+@media (prefers-reduced-motion: reduce){
+  .ring-stage .s1,.ring-stage .s2,.ring-stage .s3,.tag.t1,.tag.t2,.tag.t3{animation:none !important;}
+  .ring-stage .s3,.tag.t3{opacity:1 !important;}
+  .ring-stage .s1,.ring-stage .s2,.tag.t1,.tag.t2{opacity:0 !important;}
+}
