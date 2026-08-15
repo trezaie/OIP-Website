@@ -22,7 +22,13 @@
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html{scroll-behavior:smooth;}
-  body{margin:0;background:var(--paper);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  /* Page opens on ink and fades to paper over the first ~650px (covers the
+     nav + hero), so the very top of the site reads dark before settling
+     into the paper tone the rest of the page uses. Fixed-pixel stops (not
+     percentages) so this holds regardless of total page height -- the
+     matching fade back to ink at the bottom lives on #book/footer instead,
+     since that is where the actual dark content sits. */
+  body{margin:0;background:linear-gradient(to bottom, var(--ink) 0px, var(--paper) 650px, var(--paper) 100%);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
   a{color:inherit;} img,svg{display:block;}
   .wrap{max-width:1160px;margin:0 auto;padding:0 24px;}
   .narrow{max-width:720px;margin:0 auto;padding:0 24px;}
@@ -147,13 +153,17 @@
   .team.rv .person:nth-child(3) p{transition-delay:.95s;}
   .person p{margin:0;font-size:14.5px;color:var(--text-muted);}
 
-  #book{text-align:center;background:var(--ink);color:var(--on-ink);}
+  /* Fades from paper (matching the section above) to solid ink within its
+     own height, so the dark end of the page starts here and carries
+     through the footer -- tied to this section's own content, not a
+     page-height percentage. */
+  #book{text-align:center;background:linear-gradient(to bottom, var(--paper), var(--ink) 18%, var(--ink) 100%);color:var(--on-ink);}
   #book .eyebrow{color:var(--gold-bright);justify-content:center;}
   #book .eyebrow::before{background:var(--euc-bright);}
   #book h2{font-size:clamp(28px,4vw,42px);max-width:20ch;margin:14px auto 0;font-weight:600;}
   #book .lede{color:#B4C1BC;max-width:50ch;margin:18px auto 28px;font-size:16.5px;}
 
-  footer.site{border-top:1px solid var(--line);padding:28px 0;font-family:var(--mono);font-size:11.5px;color:var(--text-muted);}
+  footer.site{border-top:1px solid var(--line-dark);padding:28px 0;font-family:var(--mono);font-size:11.5px;color:var(--on-ink-muted);background:var(--ink);}
   .foot-in{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;}
 
   .fit-scale{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:12px;margin:40px 0 8px;align-items:stretch;}
