@@ -106,39 +106,18 @@
   /* The connecting line draws left-to-right first, and each badge pops in
      right as the line reaches its position -- ties the entrance directly
      to the "journey" visual instead of just fading pieces in generically.
-     The title/description no longer just fade in: a streak grows out of
-     the badge (matching its color) and the text wipes into view right
-     behind the streak's leading edge, like the badge's own color is
-     drawing the words into existence -- a "morph" from icon to text
-     rather than a plain reveal. Desktop grows the streak downward (badge
-     sits above the text there); the mobile/narrow layout below grows it
-     rightward (badge sits beside the text). */
+     Title/description use a plain fade+rise on desktop. The streak-wipe
+     "morph" (icon's color drawing the text in) lives only in the mobile
+     media query below -- kept there per request, removed from desktop. */
   .js .path.rv .path-line{transform:scaleX(0);}
   .js .path.rv.in .path-line{transform:scaleX(1);transition:transform 1s cubic-bezier(.3,0,.2,1);}
   .js .path.rv .node .badge{opacity:0;transform:scale(.5);transition:opacity .4s ease,transform .4s cubic-bezier(.34,1.56,.64,1);}
   .js .path.rv.in .node .badge{opacity:1;transform:scale(1);}
 
-  .node .streak{position:absolute;background:linear-gradient(to bottom, var(--gold) 0%, var(--gold-bright) 60%, transparent 100%);border-radius:2px;z-index:1;pointer-events:none;}
-  .node .streak{left:50%;top:100%;width:3px;height:0;transform:translateX(-50%);transform-origin:top center;}
-  .js .path.rv .node .streak{opacity:1;}
-  /* Longhand (not the animation shorthand) so only animation-name changes
-     between desktop/mobile below -- the shorthand would silently reset
-     animation-delay back to 0 on whichever breakpoint redeclares it,
-     exactly the bug caught earlier in the team-section border-draw. */
-  .js .path.rv.in .node .streak{animation-name:streakDown;animation-duration:.5s;animation-timing-function:cubic-bezier(.2,.7,.15,1);animation-fill-mode:both;}
-  @keyframes streakDown{
-    0%{height:0;opacity:1;}
-    75%{height:90px;opacity:1;}
-    100%{height:90px;opacity:0;}
-  }
-  @keyframes streakRight{
-    0%{width:0;opacity:1;}
-    75%{width:220px;opacity:1;}
-    100%{width:220px;opacity:0;}
-  }
+  .node .streak{display:none;}
 
-  .js .path.rv .node h3,.js .path.rv .node p{opacity:.4;clip-path:inset(0 0 100% 0);transition:opacity .5s ease,clip-path .5s cubic-bezier(.2,.7,.15,1);}
-  .js .path.rv.in .node h3,.js .path.rv.in .node p{opacity:1;clip-path:inset(0 0 0% 0);}
+  .js .path.rv .node h3,.js .path.rv .node p{opacity:0;transform:translateY(10px);transition:opacity .4s ease,transform .4s ease;}
+  .js .path.rv.in .node h3,.js .path.rv.in .node p{opacity:1;transform:none;}
 
   .path.rv .node:nth-child(1) .badge,.path.rv .node:nth-child(1) .streak{transition-delay:.15s;animation-delay:.15s;}
   .path.rv .node:nth-child(1) h3{transition-delay:.35s;}
@@ -230,13 +209,28 @@
     .node h3{grid-column:2;grid-row:1;margin:0;text-align:left;justify-self:auto;}
     .node p{grid-column:2;grid-row:2;max-width:none;text-align:left;justify-self:auto;}
 
-    /* Badge sits beside the text here instead of above it, so the streak
-       grows rightward instead of downward, and the text wipes in left-to-
-       right behind it -- same morph idea, oriented to match. */
-    .node .streak{left:100%;top:28px;width:0;height:3px;background:linear-gradient(to right, var(--gold) 0%, var(--gold-bright) 60%, transparent 100%);transform:none;}
-    .js .path.rv.in .node .streak{animation-name:streakRight;}
-    .js .path.rv .node h3,.js .path.rv .node p{clip-path:inset(0 100% 0 0);}
-    .js .path.rv.in .node h3,.js .path.rv.in .node p{clip-path:inset(0 0% 0 0);}
+    /* Mobile-only: badge sits beside the text instead of above it, so a
+       streak grows rightward out of the badge (matching its color) and
+       the text wipes into view left-to-right right behind its leading
+       edge -- the icon's color reads as drawing the words in. Desktop
+       dropped this in favor of a plain fade (see the base rule above);
+       kept and slowed down slightly here per request. transition-property/
+       duration/timing-function are set as separate longhands rather than
+       the transition shorthand, and the streak's animation-name is set
+       without touching animation-duration/delay, so neither redeclaration
+       resets the transition-delay/animation-delay set by the nth-child
+       stagger rules above -- the same shorthand-reset bug caught earlier
+       in the team-section border-draw. */
+    .node .streak{display:block;position:absolute;left:100%;top:28px;width:0;height:3px;background:linear-gradient(to right, var(--gold) 0%, var(--gold-bright) 60%, transparent 100%);border-radius:2px;z-index:1;pointer-events:none;transform:none;}
+    .js .path.rv .node .streak{opacity:1;}
+    .js .path.rv.in .node .streak{animation-name:streakRight;animation-duration:.75s;animation-timing-function:cubic-bezier(.2,.7,.15,1);animation-fill-mode:both;}
+    @keyframes streakRight{
+      0%{width:0;opacity:1;}
+      75%{width:220px;opacity:1;}
+      100%{width:220px;opacity:0;}
+    }
+    .js .path.rv .node h3,.js .path.rv .node p{opacity:.4;transform:none;clip-path:inset(0 100% 0 0);transition-property:opacity,clip-path;transition-duration:.75s,.75s;transition-timing-function:ease,cubic-bezier(.2,.7,.15,1);}
+    .js .path.rv.in .node h3,.js .path.rv.in .node p{opacity:1;clip-path:inset(0 0% 0 0);}
   }
   @media(max-width:1100px){
     .nav-links{display:none;}
