@@ -253,7 +253,15 @@
   .modal-success-sub{color:var(--text-muted);margin-top:8px;font-size:14.5px;}
   body.modal-lock{overflow:hidden;}
   @media(max-width:520px){
-    .modal-card{padding:28px 22px;}
+    .modal-overlay{padding:14px;}
+    .modal-card{padding:22px 18px;border-radius:16px;max-height:94vh;}
+    .modal-close{top:14px;right:14px;width:28px;height:28px;font-size:18px;}
+    .modal-title{font-size:20px;margin-top:2px;}
+    .modal-sub{font-size:13px;margin-top:6px;margin-bottom:16px;}
+    .form-row{margin-bottom:10px;}
+    .form-row label{font-size:10.5px;margin-bottom:4px;}
+    .form-row input,.form-row select{padding:9px 12px;font-size:14.5px;}
+    .modal-submit{margin-top:4px;padding:10px 20px;font-size:13.5px;}
   }
 </style>
 </head>
@@ -460,7 +468,7 @@
           <option>Something else</option>
         </select>
       </div>
-      <button type="submit" class="btn primary modal-submit">Book a call ↗</button>
+      <button type="submit" class="btn primary modal-submit">Submit</button>
       <p class="modal-error" id="modalError" hidden>Something went wrong. Please try again, or email us directly.</p>
     </form>
 
@@ -552,7 +560,7 @@
     errorEl.hidden = true;
     var submitBtn = form.querySelector('.modal-submit');
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending...';
+    submitBtn.textContent = 'Submitting...';
     fetch(form.action, {
       method: 'POST',
       body: new FormData(form),
@@ -567,7 +575,7 @@
     }).catch(function(){
       errorEl.hidden = false;
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Book a call ↗';
+      submitBtn.textContent = 'Submit';
     });
   });
 })();
