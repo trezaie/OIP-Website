@@ -105,26 +105,54 @@
 
   /* The connecting line draws left-to-right first, and each badge pops in
      right as the line reaches its position -- ties the entrance directly
-     to the "journey" visual instead of just fading pieces in generically. */
+     to the "journey" visual instead of just fading pieces in generically.
+     The title/description no longer just fade in: a streak grows out of
+     the badge (matching its color) and the text wipes into view right
+     behind the streak's leading edge, like the badge's own color is
+     drawing the words into existence -- a "morph" from icon to text
+     rather than a plain reveal. Desktop grows the streak downward (badge
+     sits above the text there); the mobile/narrow layout below grows it
+     rightward (badge sits beside the text). */
   .js .path.rv .path-line{transform:scaleX(0);}
   .js .path.rv.in .path-line{transform:scaleX(1);transition:transform 1s cubic-bezier(.3,0,.2,1);}
   .js .path.rv .node .badge{opacity:0;transform:scale(.5);transition:opacity .4s ease,transform .4s cubic-bezier(.34,1.56,.64,1);}
   .js .path.rv.in .node .badge{opacity:1;transform:scale(1);}
-  .js .path.rv .node h3,.js .path.rv .node p{opacity:0;transform:translateY(10px);transition:opacity .4s ease,transform .4s ease;}
-  .js .path.rv.in .node h3,.js .path.rv.in .node p{opacity:1;transform:none;}
-  .path.rv .node:nth-child(1) .badge{transition-delay:.15s;}
+
+  .node .streak{position:absolute;background:linear-gradient(to bottom, var(--gold) 0%, var(--gold-bright) 60%, transparent 100%);border-radius:2px;z-index:1;pointer-events:none;}
+  .node .streak{left:50%;top:100%;width:3px;height:0;transform:translateX(-50%);transform-origin:top center;}
+  .js .path.rv .node .streak{opacity:1;}
+  /* Longhand (not the animation shorthand) so only animation-name changes
+     between desktop/mobile below -- the shorthand would silently reset
+     animation-delay back to 0 on whichever breakpoint redeclares it,
+     exactly the bug caught earlier in the team-section border-draw. */
+  .js .path.rv.in .node .streak{animation-name:streakDown;animation-duration:.5s;animation-timing-function:cubic-bezier(.2,.7,.15,1);animation-fill-mode:both;}
+  @keyframes streakDown{
+    0%{height:0;opacity:1;}
+    75%{height:90px;opacity:1;}
+    100%{height:90px;opacity:0;}
+  }
+  @keyframes streakRight{
+    0%{width:0;opacity:1;}
+    75%{width:220px;opacity:1;}
+    100%{width:220px;opacity:0;}
+  }
+
+  .js .path.rv .node h3,.js .path.rv .node p{opacity:.4;clip-path:inset(0 0 100% 0);transition:opacity .5s ease,clip-path .5s cubic-bezier(.2,.7,.15,1);}
+  .js .path.rv.in .node h3,.js .path.rv.in .node p{opacity:1;clip-path:inset(0 0 0% 0);}
+
+  .path.rv .node:nth-child(1) .badge,.path.rv .node:nth-child(1) .streak{transition-delay:.15s;animation-delay:.15s;}
   .path.rv .node:nth-child(1) h3{transition-delay:.35s;}
   .path.rv .node:nth-child(1) p{transition-delay:.42s;}
-  .path.rv .node:nth-child(2) .badge{transition-delay:.35s;}
+  .path.rv .node:nth-child(2) .badge,.path.rv .node:nth-child(2) .streak{transition-delay:.35s;animation-delay:.35s;}
   .path.rv .node:nth-child(2) h3{transition-delay:.55s;}
   .path.rv .node:nth-child(2) p{transition-delay:.62s;}
-  .path.rv .node:nth-child(3) .badge{transition-delay:.55s;}
+  .path.rv .node:nth-child(3) .badge,.path.rv .node:nth-child(3) .streak{transition-delay:.55s;animation-delay:.55s;}
   .path.rv .node:nth-child(3) h3{transition-delay:.75s;}
   .path.rv .node:nth-child(3) p{transition-delay:.82s;}
-  .path.rv .node:nth-child(4) .badge{transition-delay:.75s;}
+  .path.rv .node:nth-child(4) .badge,.path.rv .node:nth-child(4) .streak{transition-delay:.75s;animation-delay:.75s;}
   .path.rv .node:nth-child(4) h3{transition-delay:.95s;}
   .path.rv .node:nth-child(4) p{transition-delay:1.02s;}
-  .path.rv .node:nth-child(5) .badge{transition-delay:.95s;}
+  .path.rv .node:nth-child(5) .badge,.path.rv .node:nth-child(5) .streak{transition-delay:.95s;animation-delay:.95s;}
   .path.rv .node:nth-child(5) h3{transition-delay:1.15s;}
   .path.rv .node:nth-child(5) p{transition-delay:1.22s;}
 
@@ -201,6 +229,14 @@
     .node .badge svg{width:22px;height:22px;}
     .node h3{grid-column:2;grid-row:1;margin:0;text-align:left;justify-self:auto;}
     .node p{grid-column:2;grid-row:2;max-width:none;text-align:left;justify-self:auto;}
+
+    /* Badge sits beside the text here instead of above it, so the streak
+       grows rightward instead of downward, and the text wipes in left-to-
+       right behind it -- same morph idea, oriented to match. */
+    .node .streak{left:100%;top:28px;width:0;height:3px;background:linear-gradient(to right, var(--gold) 0%, var(--gold-bright) 60%, transparent 100%);transform:none;}
+    .js .path.rv.in .node .streak{animation-name:streakRight;}
+    .js .path.rv .node h3,.js .path.rv .node p{clip-path:inset(0 100% 0 0);}
+    .js .path.rv.in .node h3,.js .path.rv.in .node p{clip-path:inset(0 0% 0 0);}
   }
   @media(max-width:1100px){
     .nav-links{display:none;}
@@ -376,27 +412,27 @@
       <div class="path-line"></div>
       <div class="path-nodes">
         <div class="node">
-          <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg><span class="chip">01</span></span>
+          <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg><span class="chip">01</span><span class="streak"></span></span>
           <h3>Find the real opportunity</h3>
           <p>We diagnose where AI actually moves the needle for your business.</p>
         </div>
         <div class="node">
-          <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="2.5" x2="12" y2="5.5"/><line x1="12" y1="18.5" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="5.5" y2="12"/><line x1="18.5" y1="12" x2="21.5" y2="12"/></svg><span class="chip">02</span></span>
+          <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="2.5" x2="12" y2="5.5"/><line x1="12" y1="18.5" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="5.5" y2="12"/><line x1="18.5" y1="12" x2="21.5" y2="12"/></svg><span class="chip">02</span><span class="streak"></span></span>
           <h3>Bring in the right tool</h3>
           <p>We match the opportunity to a tool that's proven, not trendy.</p>
         </div>
         <div class="node">
-          <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg><span class="chip">03</span></span>
+          <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg><span class="chip">03</span><span class="streak"></span></span>
           <h3>Get the data ready</h3>
           <p>We get your data structured and trustworthy before it goes live.</p>
         </div>
         <div class="node">
-          <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20c0-3.3 2.5-6 5.5-6s5.5 2.7 5.5 6"/><circle cx="17.5" cy="9" r="2.3"/><path d="M14.8 20c0-2.6 1.6-4.2 3.5-4.2"/></svg><span class="chip">04</span></span>
+          <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20c0-3.3 2.5-6 5.5-6s5.5 2.7 5.5 6"/><circle cx="17.5" cy="9" r="2.3"/><path d="M14.8 20c0-2.6 1.6-4.2 3.5-4.2"/></svg><span class="chip">04</span><span class="streak"></span></span>
           <h3>Train your team</h3>
           <p>We make sure your team is confident using what we implemented, not just handed a login.</p>
         </div>
         <div class="node">
-          <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.5-6"/><path d="M21 5v5.5h-5.5"/></svg><span class="chip">05</span></span>
+          <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.5-6"/><path d="M21 5v5.5h-5.5"/></svg><span class="chip">05</span><span class="streak"></span></span>
           <h3>Support after implementation</h3>
           <p>We monitor what's live and keep you current on AI developments relevant to your business.</p>
         </div>
