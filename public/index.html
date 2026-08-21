@@ -50,10 +50,96 @@
   .btn.primary:hover{transform:translateY(-1px);background:var(--orange-deep);border-color:var(--orange-deep);}
   nav .btn{padding:8px 16px;font-size:12px;}
 
-  header.hero{padding:76px 0 24px;}
-  .hero h1{font-size:clamp(30px,4.6vw,50px);letter-spacing:-.01em;max-width:16ch;}
-  .hero h1 em{font-style:normal;font-weight:700;color:var(--gold-deep);}
-  .hero .lede{font-size:17.5px;color:var(--text-muted);max-width:56ch;margin:22px 0 30px;}
+  /* ===== Hero: a flowing color ribbon behind blend-mode text, instead
+     of a white card next to a static graphic. Text is white with
+     mix-blend-mode:difference -- reads dark against the pale hero
+     background, then visibly shifts to inverted hues wherever it
+     crosses the ribbon as it drifts. isolation:isolate on header.hero
+     scopes that blend to composite against the ribbon specifically. An
+     explicit paper background on the hero (rather than inheriting the
+     page's ink-to-paper fade) keeps that contrast math predictable
+     regardless of how tall the hero content gets -- the dark "ink"
+     opening now reads on the nav bar only. ===== */
+  header.hero{position:relative;overflow:hidden;isolation:isolate;background:var(--paper);padding:40px 0 0;}
+  .ribbon-field{position:absolute;inset:0;overflow:hidden;z-index:0;pointer-events:none;}
+  .ribbon{position:absolute;top:-50%;right:-5%;width:42%;height:220%;
+    background:linear-gradient(158deg, var(--euc) 0%, var(--gold) 38%, var(--orange-bright) 62%, var(--orange) 82%, var(--gold-bright) 100%);
+    transform:rotate(-14deg);
+    -webkit-mask-image:linear-gradient(90deg, transparent 0%, black 35%, black 65%, transparent 100%);
+    mask-image:linear-gradient(90deg, transparent 0%, black 35%, black 65%, transparent 100%);
+    filter:blur(20px);
+    animation:ribbonDrift 16s ease-in-out infinite;}
+  @keyframes ribbonDrift{
+    0%,100%{ transform:rotate(-14deg) translate(0,0); }
+    50%{ transform:rotate(-11deg) translate(-3%, 2%); }
+  }
+  /* No explicit z-index here: that would give hero-inner its own
+     stacking context, and the mix-blend-mode text inside would only
+     ever see its own (transparent) background instead of the ribbon
+     painted behind it in header.hero's isolated context -- rendering as
+     plain white instead of blending. Staying position:relative with
+     z-index:auto keeps it paint-ordered above the ribbon (later in the
+     DOM) without trapping the blend. */
+  .hero-inner{position:relative;padding-bottom:20px;}
+  .hero .blend{color:#fff;mix-blend-mode:difference;}
+  .hero h1{font-weight:700;font-size:clamp(32px,5.2vw,64px);line-height:1.1;letter-spacing:-.01em;max-width:21ch;margin-top:20px;}
+  .hero h1 em{font-style:normal;}
+  /* Typewriter reveal + blinking cursor on the last clause -- text
+     visibly "typing itself in" reads as an AI-generation cue, which is
+     literally what the product does. */
+  .hero .typewriter{display:inline-block;overflow:hidden;white-space:nowrap;vertical-align:bottom;
+    width:0;animation:typeIn 2.1s steps(20, end) 1.1s forwards;}
+  .hero .typewriter::after{content:'';display:inline-block;width:3px;height:.85em;background:currentColor;margin-left:3px;vertical-align:-2px;animation:caretBlink .8s steps(1) infinite;}
+  @keyframes typeIn{ from{width:0;} to{width:100%;} }
+  @keyframes caretBlink{ 50%{opacity:0;} }
+
+  /* "Product in action" cards -- small generic UI vignettes (not real
+     screen recordings of ChatGPT/Perplexity/Claude Code, which we have
+     no rights to reproduce) that stay in motion the way Stripe's device
+     mockups do. */
+  .tool-cards{position:relative;z-index:1;display:flex;gap:14px;margin-top:30px;max-width:700px;}
+  .tool-card{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:11px;
+    padding:12px 13px;box-shadow:0 10px 26px rgba(30,38,36,.09);}
+  .tc-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--text-muted);display:flex;align-items:center;gap:6px;margin-bottom:9px;}
+  .tc-label::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--euc);flex:none;}
+  .tc-body{height:64px;}
+  .chat-bubble{border-radius:7px;padding:5px 8px;font-size:10.5px;line-height:1.35;margin-bottom:6px;max-width:88%;}
+  .chat-bubble.user{background:var(--paper);margin-left:auto;}
+  .chat-bubble.ai{background:rgba(79,127,109,.12);width:0;overflow:hidden;white-space:nowrap;
+    animation:tcType 5s ease-in-out infinite;}
+  @keyframes tcType{ 0%{width:0;} 35%{width:100%;} 82%{width:100%;} 100%{width:0;} }
+  .tc-search{display:flex;align-items:center;gap:6px;background:var(--paper);border-radius:6px;
+    padding:6px 8px;font-size:10.5px;color:var(--text-muted);margin-bottom:8px;}
+  .tc-search::before{content:'';width:9px;height:9px;border:1.4px solid var(--text-muted);border-radius:50%;flex:none;}
+  .tc-query{display:inline-block;overflow:hidden;white-space:nowrap;width:0;
+    animation:tcType2 5s steps(24,end) infinite;}
+  @keyframes tcType2{ 0%{width:0;} 35%{width:100%;} 82%{width:100%;} 100%{width:0;} }
+  .tc-pills{display:flex;gap:5px;}
+  .tc-pill{font-family:var(--mono);font-size:8.5px;background:rgba(180,138,76,.14);color:var(--gold-deep);
+    border-radius:20px;padding:3px 8px;opacity:0;animation:tcPill 5s ease-in-out infinite;}
+  .tc-pill.p2{animation-delay:.25s;} .tc-pill.p3{animation-delay:.5s;}
+  @keyframes tcPill{ 0%{opacity:0;} 42%{opacity:0;} 52%{opacity:1;} 82%{opacity:1;} 92%{opacity:0;} 100%{opacity:0;} }
+  .tc-term{font-family:var(--mono);font-size:10px;line-height:1.55;color:var(--euc-deep);}
+  .tc-term div{opacity:0;animation:tcLine .5s ease-out forwards;}
+  .tc-term div:nth-child(1){animation-delay:.1s;}
+  .tc-term div:nth-child(2){animation-delay:.7s;}
+  .tc-term div:nth-child(3){animation-delay:1.3s;}
+  @keyframes tcLine{ from{opacity:0;transform:translateY(3px);} to{opacity:1;transform:translateY(0);} }
+  .tc-term .caret{display:inline-block;width:5px;height:10px;background:var(--euc-deep);margin-left:2px;
+    vertical-align:-1px;animation:caretBlink .8s steps(1) infinite;}
+
+  /* The scrolling "landscape" of AI tools -- Stripe-style understated
+     marquee, framing the overwhelming number of options as the problem
+     this firm solves. */
+  .marquee-section{position:relative;z-index:1;padding:26px 0 30px;border-top:1px solid rgba(30,38,36,.12);margin-top:28px;}
+  .marquee-label{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);text-align:center;margin-bottom:16px;}
+  .marquee-label b{color:var(--gold-deep);font-weight:700;}
+  .marquee-track{overflow:hidden;-webkit-mask-image:linear-gradient(to right, transparent, black 8%, black 92%, transparent);mask-image:linear-gradient(to right, transparent, black 8%, black 92%, transparent);}
+  .marquee-row{display:flex;width:max-content;animation:marquee 30s linear infinite;}
+  .marquee-row span{font-family:var(--display);font-weight:600;font-size:19px;color:var(--text-muted);white-space:nowrap;padding:0 24px;display:flex;align-items:center;gap:24px;opacity:.5;}
+  .marquee-row span::after{content:'';width:5px;height:5px;background:var(--euc);border-radius:50%;flex:none;opacity:.6;}
+  @keyframes marquee{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
 
   section{padding:88px 0;}
   .act-head{margin-bottom:42px;max-width:660px;}
@@ -415,21 +501,20 @@
     nav .btn .short{display:inline;}
   }
   @media(max-width:640px){
-    header.hero{padding:56px 0 20px;}
+    header.hero{padding:28px 0 0;}
   }
-  /* Below md (768px, matching the Tailwind grid-cols breakpoint), the
-     eyebrow sits left of a smaller ring instead of both stacking full
-     width -- .hero-text-col is unwrapped via display:contents so its
-     children (h1, eyebrow) join the outer grid directly alongside the
-     ring column, which stays as its own grid item. */
   @media(max-width:767px){
-    .hero-grid{display:grid;grid-template-columns:1fr auto;grid-template-areas:"headline headline" "eyebrow ring";column-gap:16px;row-gap:0;align-items:center;}
-    .hero-text-col{display:contents;}
-    .hero-grid h1{grid-area:headline;}
-    .hero-grid .eyebrow{grid-area:eyebrow;margin-top:18px !important;justify-content:flex-start;}
-    .hero-grid .ring-col{grid-area:ring;margin-top:18px;}
-    .hero-grid .ring-stage{width:96px !important;height:96px !important;}
-    .hero-grid .tag-stack{transform:scale(.78);transform-origin:top center;margin-top:6px !important;}
+    .tool-cards{flex-direction:column;max-width:420px;}
+    .marquee-row span{font-size:16px;padding:0 18px;gap:18px;}
+    /* The ribbon is calibrated against a wide desktop canvas -- at
+       phone widths that same 42% is wide enough for the headline to sit
+       mostly on top of it, and mix-blend-mode:difference against the
+       ribbon's mid-tones washes the text out to near-invisible. Drop
+       the blend for a plain, always-legible dark headline on mobile,
+       and narrow/fade the ribbon so it reads as a soft accent instead
+       of dominating the screen. */
+    .hero .blend{color:var(--text);mix-blend-mode:normal;}
+    .ribbon{width:60%;right:-25%;opacity:.5;}
   }
 
   /* ===== Book-a-call modal ===== */
@@ -481,27 +566,47 @@
 </nav>
 
 <header class="hero" id="top">
-  <div class="wrap">
-    <div class="rv bg-card border border-line rounded-[24px] shadow-[0_20px_50px_rgba(30,38,36,0.08)] px-6 py-10 md:px-12 md:py-12">
-      <div class="hero-grid grid md:grid-cols-[1.15fr_1fr] gap-8 md:gap-12 items-center">
-        <div class="hero-text-col">
-          <h1>Not sure where AI fits in your business? We'll show you, <em>then help you turn it into a strategic edge</em>.</h1>
-          <p class="eyebrow no-marker" style="margin-top:20px;">AI implementation, wherever you're starting from</p>
-        </div>
+  <div class="ribbon-field"><div class="ribbon"></div></div>
+  <div class="wrap hero-inner rv">
+    <p class="eyebrow no-marker">AI implementation, wherever you're starting from</p>
+    <h1 class="blend">Not sure what AI fits in your business? We'll show you, <em>then help you turn it into a <span class="typewriter">strategic edge.</span></em></h1>
 
-        <div class="text-center ring-col">
-          <div class="ring-stage w-[150px] h-[150px] md:w-[220px] md:h-[220px] mx-auto">
-            <svg width="100%" height="100%" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M 52.02,167.98 A 82,82 0 1 1 167.98,167.98" stroke="#DDE2DB" stroke-width="14" stroke-linecap="round"/>
-              <path class="sweep-arc" d="M 52.02,167.98 A 82,82 0 1 1 167.98,167.98" stroke-width="14" stroke-linecap="round"/>
-              <rect class="ring-marker" width="19" height="19" rx="1.9" stroke="#fff" stroke-width="2.5"/>
-            </svg>
+    <div class="tool-cards">
+      <div class="tool-card">
+        <p class="tc-label">Chat, in action</p>
+        <div class="tc-body">
+          <div class="chat-bubble user">Automate invoice approvals?</div>
+          <div class="chat-bubble ai">Here's a 3-step workflow&hellip;</div>
+        </div>
+      </div>
+      <div class="tool-card">
+        <p class="tc-label">Search, in action</p>
+        <div class="tc-body">
+          <div class="tc-search"><span class="tc-query">best CRM for a 12-person firm</span></div>
+          <div class="tc-pills">
+            <span class="tc-pill p1">Source 1</span>
+            <span class="tc-pill p2">Source 2</span>
+            <span class="tc-pill p3">Source 3</span>
           </div>
-          <div class="tag-stack h-[22px] md:h-[26px] mt-4 md:mt-[22px]">
-            <span class="tag t1">NOT YET</span>
-            <span class="tag t2">READY WITH MINOR GAPS</span>
-            <span class="tag t3">READY NOW</span>
-          </div>
+        </div>
+      </div>
+      <div class="tool-card">
+        <p class="tc-label">Code, in action</p>
+        <div class="tc-body tc-term">
+          <div>$ running tests&hellip;</div>
+          <div>&#10003; 24 passed</div>
+          <div>&#10003; deploy ready<span class="caret"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="marquee-section">
+    <div class="wrap">
+      <p class="marquee-label">The options are <b>endless</b>. That's the problem we solve.</p>
+      <div class="marquee-track">
+        <div class="marquee-row">
+          <span>ChatGPT</span><span>Copilot</span><span>Claude</span><span>Perplexity</span><span>Gemini</span><span>Midjourney</span><span>Notion AI</span><span>Zapier Agents</span><span>Harvey</span><span>GitHub Copilot</span>
+          <span>ChatGPT</span><span>Copilot</span><span>Claude</span><span>Perplexity</span><span>Gemini</span><span>Midjourney</span><span>Notion AI</span><span>Zapier Agents</span><span>Harvey</span><span>GitHub Copilot</span>
         </div>
       </div>
     </div>
