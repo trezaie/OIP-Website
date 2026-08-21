@@ -93,41 +93,6 @@
   @keyframes typeIn{ from{width:0;} to{width:100%;} }
   @keyframes caretBlink{ 50%{opacity:0;} }
 
-  /* "Product in action" cards -- small generic UI vignettes (not real
-     screen recordings of ChatGPT/Perplexity/Claude Code, which we have
-     no rights to reproduce) that stay in motion the way Stripe's device
-     mockups do. */
-  .tool-cards{position:relative;z-index:1;display:flex;gap:14px;margin-top:30px;max-width:700px;}
-  .tool-card{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:11px;
-    padding:12px 13px;box-shadow:0 10px 26px rgba(30,38,36,.09);}
-  .tc-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
-    color:var(--text-muted);display:flex;align-items:center;gap:6px;margin-bottom:9px;}
-  .tc-label::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--euc);flex:none;}
-  .tc-body{height:64px;}
-  .chat-bubble{border-radius:7px;padding:5px 8px;font-size:10.5px;line-height:1.35;margin-bottom:6px;max-width:88%;}
-  .chat-bubble.user{background:var(--paper);margin-left:auto;}
-  .chat-bubble.ai{background:rgba(79,127,109,.12);width:0;overflow:hidden;white-space:nowrap;
-    animation:tcType 5s ease-in-out infinite;}
-  @keyframes tcType{ 0%{width:0;} 35%{width:100%;} 82%{width:100%;} 100%{width:0;} }
-  .tc-search{display:flex;align-items:center;gap:6px;background:var(--paper);border-radius:6px;
-    padding:6px 8px;font-size:10.5px;color:var(--text-muted);margin-bottom:8px;}
-  .tc-search::before{content:'';width:9px;height:9px;border:1.4px solid var(--text-muted);border-radius:50%;flex:none;}
-  .tc-query{display:inline-block;overflow:hidden;white-space:nowrap;width:0;
-    animation:tcType2 5s steps(24,end) infinite;}
-  @keyframes tcType2{ 0%{width:0;} 35%{width:100%;} 82%{width:100%;} 100%{width:0;} }
-  .tc-pills{display:flex;gap:5px;}
-  .tc-pill{font-family:var(--mono);font-size:8.5px;background:rgba(180,138,76,.14);color:var(--gold-deep);
-    border-radius:20px;padding:3px 8px;opacity:0;animation:tcPill 5s ease-in-out infinite;}
-  .tc-pill.p2{animation-delay:.25s;} .tc-pill.p3{animation-delay:.5s;}
-  @keyframes tcPill{ 0%{opacity:0;} 42%{opacity:0;} 52%{opacity:1;} 82%{opacity:1;} 92%{opacity:0;} 100%{opacity:0;} }
-  .tc-term{font-family:var(--mono);font-size:10px;line-height:1.55;color:var(--euc-deep);}
-  .tc-term div{opacity:0;animation:tcLine .5s ease-out forwards;}
-  .tc-term div:nth-child(1){animation-delay:.1s;}
-  .tc-term div:nth-child(2){animation-delay:.7s;}
-  .tc-term div:nth-child(3){animation-delay:1.3s;}
-  @keyframes tcLine{ from{opacity:0;transform:translateY(3px);} to{opacity:1;transform:translateY(0);} }
-  .tc-term .caret{display:inline-block;width:5px;height:10px;background:var(--euc-deep);margin-left:2px;
-    vertical-align:-1px;animation:caretBlink .8s steps(1) infinite;}
 
   /* The scrolling "landscape" of AI tools -- Stripe-style understated
      marquee, framing the overwhelming number of options as the problem
@@ -504,7 +469,6 @@
     header.hero{padding:28px 0 0;}
   }
   @media(max-width:767px){
-    .tool-cards{flex-direction:column;max-width:420px;}
     .marquee-row span{font-size:16px;padding:0 18px;gap:18px;}
     /* The ribbon is calibrated against a wide desktop canvas -- at
        phone widths that same 42% is wide enough for the headline to sit
@@ -568,37 +532,7 @@
 <header class="hero" id="top">
   <div class="ribbon-field"><div class="ribbon"></div></div>
   <div class="wrap hero-inner rv">
-    <p class="eyebrow no-marker">AI implementation, wherever you're starting from</p>
     <h1 class="blend">Not sure what AI fits in your business? We'll show you, <em>then help you turn it into a <span class="typewriter">strategic edge.</span></em></h1>
-
-    <div class="tool-cards">
-      <div class="tool-card">
-        <p class="tc-label">Chat, in action</p>
-        <div class="tc-body">
-          <div class="chat-bubble user">Automate invoice approvals?</div>
-          <div class="chat-bubble ai">Here's a 3-step workflow&hellip;</div>
-        </div>
-      </div>
-      <div class="tool-card">
-        <p class="tc-label">Search, in action</p>
-        <div class="tc-body">
-          <div class="tc-search"><span class="tc-query">best CRM for a 12-person firm</span></div>
-          <div class="tc-pills">
-            <span class="tc-pill p1">Source 1</span>
-            <span class="tc-pill p2">Source 2</span>
-            <span class="tc-pill p3">Source 3</span>
-          </div>
-        </div>
-      </div>
-      <div class="tool-card">
-        <p class="tc-label">Code, in action</p>
-        <div class="tc-body tc-term">
-          <div>$ running tests&hellip;</div>
-          <div>&#10003; 24 passed</div>
-          <div>&#10003; deploy ready<span class="caret"></span></div>
-        </div>
-      </div>
-    </div>
   </div>
   <div class="marquee-section">
     <div class="wrap">
