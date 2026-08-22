@@ -82,7 +82,14 @@
      DOM) without trapping the blend. */
   .hero-inner{position:relative;padding-bottom:20px;}
   .hero .blend{color:#fff;mix-blend-mode:difference;}
-  .hero h1{font-weight:700;font-size:clamp(32px,5.2vw,64px);line-height:1.1;letter-spacing:-.01em;max-width:21ch;margin-top:20px;}
+  /* Floor lowered from 32px to 24px: at 32px, the two hardcoded
+     typewriter lines below measure wider than their column on a real
+     375-390px phone (confirmed via direct measurement -- 382px and
+     351px of content in a 343px-wide column), so on real-device font
+     rendering the second line wraps to an extra sub-line that the
+     clip-path reveal does not handle -- it never appears. 24px leaves
+     real margin on both lines. */
+  .hero h1{font-weight:700;font-size:clamp(24px,5.2vw,64px);line-height:1.15;letter-spacing:-.01em;max-width:21ch;margin-top:20px;}
   /* Typewriter reveal + blinking cursor on the last clause -- text
      visibly "typing itself in" reads as an AI-generation cue, which is
      literally what the product does. */
@@ -94,7 +101,7 @@
      technique used for the process-step text below); only the last
      line keeps a trailing blinking cursor. */
   .hero .typewriter{display:block;}
-  .hero .tw-line{display:block;overflow:hidden;clip-path:inset(0 100% 0 0);
+  .hero .tw-line{display:block;overflow:hidden;white-space:nowrap;clip-path:inset(0 100% 0 0);
     animation-timing-function:steps(18,end);animation-fill-mode:forwards;}
   .hero .tw-line:nth-child(1){animation-name:typeReveal;animation-duration:1.1s;animation-delay:.6s;}
   .hero .tw-line:nth-child(2){animation-name:typeReveal;animation-duration:1.1s;animation-delay:1.85s;}
