@@ -298,9 +298,14 @@
 
   .why-block{margin:0 0 40px;}
   .why-block:last-of-type{margin-bottom:32px;}
-  .why-label{font-family:var(--mono);font-weight:700;font-size:14px;letter-spacing:.05em;text-transform:uppercase;margin:0 0 16px;}
-  .why-label.warm{color:var(--gold-deep);}
-  .why-label.cool{color:var(--euc-deep);}
+  /* A soft tinted banner (same tinted-badge language as the stat cards'
+     own pills/labels) rather than bigger text or a marker -- text stays
+     no larger than the section eyebrow above it. Spans the same width
+     as the stat-grid below it rather than sizing to its own text. */
+  .why-label{display:block;width:100%;box-sizing:border-box;font-family:var(--mono);font-weight:700;font-size:12.5px;
+    letter-spacing:.05em;text-transform:uppercase;margin:0 0 16px;padding:10px 16px;border-radius:10px;}
+  .why-label.warm{color:var(--gold-deep);background:rgba(180,138,76,.16);}
+  .why-label.cool{color:var(--euc-deep);background:rgba(79,127,109,.16);}
 
   /* Only one deliberate dark section on the whole page now (the final
      CTA below) -- everything else, including Why-it-matters, stays on
@@ -503,7 +508,7 @@
     .cmp-bar{width:20px;}
     .cmp-col{gap:5px;}
     .cmp-col span{font-size:7px;}
-    .why-label{font-size:11.5px;}
+    .why-label{font-size:11px;padding:5px 12px;}
   }
 
   /* ===== Book-a-call modal ===== */
@@ -598,7 +603,6 @@
     <div class="act-head rv">
       <p class="eyebrow">Why it matters</p>
       <h2>Most AI investment fails. Getting it right pays off.</h2>
-      <p class="sub">Independent research on both sides of that line.</p>
     </div>
 
     <div class="why-block rv">
