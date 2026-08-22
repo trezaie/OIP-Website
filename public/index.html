@@ -281,30 +281,38 @@
   .meter-row{display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-muted);margin-top:10px;}
   .meter-row b{color:var(--text);font-family:var(--display);}
 
-  /* --- Panel 3: revenue bar chart rising --- */
-  .rev-chart{display:flex;align-items:flex-end;gap:8px;height:72px;}
-  .rev-chart .bar{position:relative;flex:1;border-radius:5px 5px 2px 2px;
-    background:linear-gradient(180deg,var(--euc-bright),var(--euc));
-    height:0;animation:barRise 5s cubic-bezier(.3,.9,.4,1) infinite;}
-  .rev-chart .bar::after{content:'';position:absolute;top:0;left:0;right:0;height:5px;border-radius:5px 5px 0 0;
-    background:rgba(255,255,255,.55);}
-  .rev-chart .bar:nth-child(1){animation-delay:0s;}
-  .rev-chart .bar:nth-child(2){animation-delay:.1s;}
-  .rev-chart .bar:nth-child(3){animation-delay:.2s;}
-  .rev-chart .bar:nth-child(4){animation-delay:.3s;}
-  .rev-chart .bar:nth-child(5){animation-delay:.4s;background:linear-gradient(180deg,var(--gold-bright),var(--euc-deep));}
-  @keyframes barRise{ 0%{height:0;} 45%,80%{height:var(--h);} 100%{height:0;} }
+  /* --- Panel 3: revenue trend line -- an SVG line + gradient-fill area
+     that draws itself in on a loop (stroke-dashoffset), rather than a
+     bar chart. Reads as a live trend over time instead of a handful of
+     static comparisons, and the drawing motion is the "in action" cue. */
+  .trend-chart{height:72px;}
+  .trend-chart svg{width:100%;height:100%;overflow:visible;}
+  .trend-line{stroke-dasharray:340;stroke-dashoffset:340;
+    animation:trendDraw 5s cubic-bezier(.3,.7,.3,1) infinite;}
+  .trend-area{opacity:0;animation:trendFade 5s ease-in-out infinite;}
+  .trend-dot{opacity:0;transform-origin:260px 6px;animation:trendDotShow 5s ease-in-out infinite;}
+  @keyframes trendDraw{ 0%{stroke-dashoffset:340;} 55%,80%{stroke-dashoffset:0;} 100%{stroke-dashoffset:340;} }
+  @keyframes trendFade{ 0%,38%{opacity:0;} 60%,80%{opacity:1;} 100%{opacity:0;} }
+  @keyframes trendDotShow{
+    0%,50%{ opacity:0; transform:scale(.4); }
+    58%{ opacity:1; transform:scale(1.3); }
+    66%,80%{ opacity:1; transform:scale(1); }
+    100%{ opacity:0; transform:scale(.4); }
+  }
 
-  /* --- Panel 4: standard vs top-performer comparison --- */
-  .cmp-row{display:flex;align-items:flex-end;gap:26px;height:80px;justify-content:center;padding-top:6px;}
+  /* --- Panel 4: standard vs top-performer radial rings, replacing the
+     bar comparison -- two animated progress dials (stroke-dashoffset
+     sweep) instead of bars. */
+  .cmp-row{display:flex;align-items:center;gap:30px;height:80px;justify-content:center;padding-top:4px;}
   .cmp-col{display:flex;flex-direction:column;align-items:center;gap:9px;}
-  .cmp-bar{width:38px;border-radius:6px 6px 2px 2px;position:relative;}
-  .cmp-bar.standard{height:20px;background:var(--line);}
-  .cmp-bar.top{height:0;background:linear-gradient(180deg,var(--euc-bright),var(--euc-deep));
-    animation:cmpRise 5s cubic-bezier(.3,.9,.4,1) infinite;}
-  .cmp-bar.top::after{content:'';position:absolute;top:0;left:0;right:0;height:6px;border-radius:6px 6px 0 0;
-    background:rgba(255,255,255,.55);}
-  @keyframes cmpRise{ 0%{height:0;} 45%,80%{height:66px;} 100%{height:0;} }
+  .cmp-ring{width:60px;height:60px;}
+  .cmp-ring circle{fill:none;stroke-width:6;}
+  .cmp-ring .track{stroke:var(--line);}
+  .cmp-ring .fill{stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;
+    stroke-dasharray:163;stroke-dashoffset:163;animation:ringFill 5s cubic-bezier(.3,.9,.4,1) infinite;}
+  .cmp-col.standard .cmp-ring .fill{stroke:var(--slate);--ring-target:114;}
+  .cmp-col.top .cmp-ring .fill{stroke:var(--euc-deep);--ring-target:8;}
+  @keyframes ringFill{ 0%{stroke-dashoffset:163;} 45%,80%{stroke-dashoffset:var(--ring-target);} 100%{stroke-dashoffset:163;} }
   .cmp-col span{font-family:var(--mono);font-size:10px;color:var(--text-muted);}
 
   .more-link{display:inline-flex;align-items:center;gap:6px;margin-top:28px;font-family:var(--mono);font-size:13px;color:var(--euc-deep);text-decoration:none;font-weight:500;border-bottom:1px solid var(--euc);padding-bottom:2px;}
@@ -517,9 +525,9 @@
     .status-label{font-size:6.5px;width:38px;}
     .meter-track{height:6px;}
     .meter-row{font-size:8.5px;margin-top:6px;}
-    .rev-chart{height:42px;gap:4px;}
-    .cmp-row{height:52px;gap:10px;}
-    .cmp-bar{width:20px;}
+    .trend-chart{height:42px;}
+    .cmp-row{height:52px;gap:16px;}
+    .cmp-ring{width:40px;height:40px;}
     .cmp-col{gap:5px;}
     .cmp-col span{font-size:7px;}
     .why-label{font-size:11px;padding:5px 12px;}
@@ -701,12 +709,20 @@
                 <span class="live-dot"></span>
               </div>
               <div class="sb-panel-body">
-                <div class="rev-chart">
-                  <div class="bar" style="--h:34%"></div>
-                  <div class="bar" style="--h:48%"></div>
-                  <div class="bar" style="--h:58%"></div>
-                  <div class="bar" style="--h:78%"></div>
-                  <div class="bar" style="--h:100%"></div>
+                <div class="trend-chart">
+                  <svg viewBox="0 0 260 80" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="trendFillGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#4F7F6D" stop-opacity=".38"/>
+                        <stop offset="100%" stop-color="#4F7F6D" stop-opacity="0"/>
+                      </linearGradient>
+                    </defs>
+                    <path class="trend-area" fill="url(#trendFillGradient)"
+                      d="M0,62 C20,60 35,45 55,48 C75,51 90,35 110,38 C130,41 145,20 165,24 C185,28 200,12 220,15 C235,17 245,8 260,6 L260,80 L0,80 Z"/>
+                    <path class="trend-line" fill="none" stroke="#264438" stroke-width="3" stroke-linecap="round"
+                      d="M0,62 C20,60 35,45 55,48 C75,51 90,35 110,38 C130,41 145,20 165,24 C185,28 200,12 220,15 C235,17 245,8 260,6"/>
+                    <circle class="trend-dot" cx="260" cy="6" r="4.5" fill="#264438"/>
+                  </svg>
                 </div>
               </div>
             </div>
@@ -742,8 +758,20 @@
               </div>
               <div class="sb-panel-body">
                 <div class="cmp-row">
-                  <div class="cmp-col"><div class="cmp-bar standard"></div><span>Standard</span></div>
-                  <div class="cmp-col"><div class="cmp-bar top"></div><span>Top performers</span></div>
+                  <div class="cmp-col standard">
+                    <svg class="cmp-ring" viewBox="0 0 60 60">
+                      <circle class="track" cx="30" cy="30" r="26"/>
+                      <circle class="fill" cx="30" cy="30" r="26"/>
+                    </svg>
+                    <span>Standard</span>
+                  </div>
+                  <div class="cmp-col top">
+                    <svg class="cmp-ring" viewBox="0 0 60 60">
+                      <circle class="track" cx="30" cy="30" r="26"/>
+                      <circle class="fill" cx="30" cy="30" r="26"/>
+                    </svg>
+                    <span>Top performers</span>
+                  </div>
                 </div>
               </div>
             </div>
