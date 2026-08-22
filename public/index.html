@@ -428,9 +428,9 @@ window.addEventListener('load', function(){
   .fit-track{position:absolute;left:0;right:0;top:-22px;height:2px;background:var(--line);}
   .fit-pointer{position:absolute;top:-28px;width:12px;height:12px;border-radius:50%;background:var(--euc-deep);
     box-shadow:0 0 0 4px rgba(79,127,109,.18);left:16.5%;transform:translateX(-50%);
-    transition:left 1.1s cubic-bezier(.22,1.4,.36,1), box-shadow .4s ease;}
+    transition:left 1.1s cubic-bezier(.22,1.4,.36,1), top 1.1s cubic-bezier(.22,1.4,.36,1), box-shadow .4s ease;}
   .fit-pointer::after{content:'';position:absolute;left:50%;top:100%;width:1px;height:20px;background:var(--euc-bright);transform:translateX(-50%);opacity:.6;}
-  .fit-scale.in .fit-pointer{left:50%;box-shadow:0 0 0 7px rgba(79,127,109,.22);}
+  .fit-scale.in .fit-pointer{left:var(--pointer-x,50%);box-shadow:0 0 0 7px rgba(79,127,109,.22);}
 
   .fit-zone{position:relative;border-radius:8px;padding:22px 18px;text-align:center;
     transition:transform .5s cubic-bezier(.3,.7,.3,1),box-shadow .5s ease,border-color .5s ease;}
@@ -463,8 +463,16 @@ window.addEventListener('load', function(){
   .js .rv.in{opacity:1;transform:none;}
 
   @media(max-width:900px){
-    .fit-scale{grid-template-columns:1fr;margin-top:24px;}
-    .fit-track,.fit-pointer{display:none;}
+    /* The gauge sweeps vertically on mobile instead of horizontally --
+       a rail runs down the left edge of the stacked zones and the
+       pointer travels down it, landing beside Growing SMBs. Its resting
+       and locked positions are computed in JS (--pointer-y) from the
+       zone's actual position, since each zone's height varies with its
+       own copy and a hardcoded percentage can't track that. */
+    .fit-scale{grid-template-columns:1fr;margin-top:24px;padding-left:26px;}
+    .fit-track{left:1px;right:auto;top:6px;bottom:6px;width:2px;height:auto;}
+    .fit-pointer{left:1px;top:8%;transform:translate(-50%,-50%);}
+    .fit-scale.in .fit-pointer{left:1px;top:var(--pointer-y,50%);}
     .fit-checks{grid-template-columns:1fr;}
     .team{grid-template-columns:1fr;}
     section{padding:64px 0;}
@@ -889,9 +897,7 @@ window.addEventListener('load', function(){
 
 <section id="book">
   <div class="narrow">
-    <p class="eyebrow rv">Get started</p>
-    <h2 class="rv">Wherever you're starting, let's talk.</h2>
-    <p class="lede rv">Tell us where you are, and we'll figure out the right next step together.</p>
+    <h2 class="rv">Tell us where you are, and we'll figure out the next step together.</h2>
     <a class="btn primary rv js-book-call" href="#">Book a call ↗</a>
   </div>
 </section>
@@ -1010,6 +1016,19 @@ window.addEventListener('load', function(){
 
 (function(){
   var scaleEl = document.querySelector('[data-fit-scale]');
+  var targetZone = scaleEl ? scaleEl.querySelector('.fit-zone.target') : null;
+  function positionPointer(){
+    if(!scaleEl || !targetZone) return;
+    var scaleRect = scaleEl.getBoundingClientRect();
+    var targetRect = targetZone.getBoundingClientRect();
+    var xPct = ((targetRect.left + targetRect.width/2) - scaleRect.left) / scaleRect.width * 100;
+    var yPct = ((targetRect.top + targetRect.height/2) - scaleRect.top) / scaleRect.height * 100;
+    scaleEl.style.setProperty('--pointer-x', xPct + '%');
+    scaleEl.style.setProperty('--pointer-y', yPct + '%');
+  }
+  positionPointer();
+  window.addEventListener('resize', positionPointer);
+
   if(scaleEl){
     if('IntersectionObserver' in window){
       var scaleIo = new IntersectionObserver(function(es){
