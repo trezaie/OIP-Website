@@ -818,7 +818,7 @@ window.addEventListener('load', function(){
   <div class="wrap">
     <div class="act-head rv">
       <p class="eyebrow">What working with us looks like</p>
-      <h2>One team, from the first question to what happens after.</h2>
+      <h2>One team, from where to start to what's next.</h2>
     </div>
     <div class="steps">
       <div class="step" data-step>
@@ -1019,9 +1019,21 @@ window.addEventListener('load', function(){
   var steps = document.querySelectorAll('[data-step]');
   if(!steps.length) return;
   if('IntersectionObserver' in window){
+    /* Steps only collapse back when scrolling up (back toward the top
+       of the page) and a step scrolls out the bottom -- continuing to
+       scroll down past a step (it exits the top, on the way to later
+       content) leaves it expanded instead of resetting it. */
+    var lastY = window.scrollY;
+    var scrollDir = 'down';
+    window.addEventListener('scroll', function(){
+      var y = window.scrollY;
+      if(y !== lastY){ scrollDir = y < lastY ? 'up' : 'down'; lastY = y; }
+    }, {passive:true});
+
     var stepIo = new IntersectionObserver(function(es){
       es.forEach(function(e){
-        e.target.classList.toggle('in', e.isIntersecting);
+        if(e.isIntersecting){ e.target.classList.add('in'); }
+        else if(scrollDir === 'up'){ e.target.classList.remove('in'); }
       });
     },{threshold:0.35});
     steps.forEach(function(el){ stepIo.observe(el); });
