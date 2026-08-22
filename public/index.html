@@ -9,7 +9,21 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="output.css">
-<script>document.documentElement.classList.add("js");if('scrollRestoration' in history){history.scrollRestoration='manual';}window.scrollTo(0,0);window.addEventListener('pageshow',function(){window.scrollTo(0,0);});</script>
+<script>
+document.documentElement.classList.add("js");
+if('scrollRestoration' in history){history.scrollRestoration='manual';}
+function forceScrollTop(){ if(window.scrollY!==0||window.scrollX!==0){ window.scrollTo({top:0,left:0,behavior:'instant'}); } }
+forceScrollTop();
+window.addEventListener('pageshow', forceScrollTop);
+window.addEventListener('load', function(){
+  forceScrollTop();
+  var start = Date.now();
+  (function loop(){
+    forceScrollTop();
+    if(Date.now() - start < 500){ requestAnimationFrame(loop); }
+  })();
+});
+</script>
 <style>
   :root{
     --ink:#1E2624; --ink-2:#243330; --paper:#EDEFEA; --card:#FFFFFF;
