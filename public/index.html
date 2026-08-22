@@ -295,26 +295,36 @@ window.addEventListener('load', function(){
   .meter-row{display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-muted);margin-top:10px;}
   .meter-row b{color:var(--text);font-family:var(--display);}
 
-  /* --- Panel 3: revenue trend line -- an SVG line + gradient-fill area
-     that draws itself in on a loop (stroke-dashoffset), rather than a
-     bar chart. Reads as a live trend over time instead of a handful of
-     static comparisons, and the drawing motion is the "in action" cue. */
-  .trend-chart{height:72px;}
-  .trend-chart svg{width:100%;height:100%;overflow:visible;}
-  .trend-line{stroke-dasharray:340;stroke-dashoffset:340;
-    animation:trendDraw 5s cubic-bezier(.3,.7,.3,1) infinite;}
-  .trend-line-base{stroke-dasharray:300;stroke-dashoffset:300;
-    animation:trendDraw 5s cubic-bezier(.3,.7,.3,1) infinite;}
-  .trend-area{opacity:0;animation:trendFade 5s ease-in-out infinite;}
-  .trend-dot{opacity:0;transform-origin:260px 6px;animation:trendDotShow 5s ease-in-out infinite;}
-  @keyframes trendDraw{ 0%{stroke-dashoffset:340;} 55%,80%{stroke-dashoffset:0;} 100%{stroke-dashoffset:340;} }
-  @keyframes trendFade{ 0%,38%{opacity:0;} 60%,80%{opacity:1;} 100%{opacity:0;} }
-  @keyframes trendDotShow{
-    0%,50%{ opacity:0; transform:scale(.4); }
-    58%{ opacity:1; transform:scale(1.3); }
-    66%,80%{ opacity:1; transform:scale(1); }
-    100%{ opacity:0; transform:scale(.4); }
+  /* --- Panel 3: revenue growth meter -- a single fill with a fixed
+     two-tone gradient (color at each x-position never moves), revealed
+     by animating a clip-path inset rather than a width. Fills to the
+     Standard marker, pauses, then keeps extending past it into the
+     +35% stretch, and retracts the same way -- reading as one fluid
+     bar rather than two separately-sized pieces. */
+  .growth-meter{height:34px;margin-top:14px;position:relative;background:var(--paper);
+    border-radius:17px;border:1px solid var(--line);overflow:visible;}
+  .growth-meter-fill{position:absolute;inset:0;border-radius:17px;
+    background:linear-gradient(90deg, var(--slate) 0%, var(--slate) 64%, var(--euc) 64%, var(--euc-deep) 100%);
+    clip-path:inset(0 100% 0 0);animation:meterReveal 5s cubic-bezier(.3,.7,.3,1) infinite;}
+  @keyframes meterReveal{
+    0%{clip-path:inset(0 100% 0 0);}
+    28%,40%{clip-path:inset(0 36% 0 0);}
+    62%,80%{clip-path:inset(0 0% 0 0);}
+    100%{clip-path:inset(0 100% 0 0);}
   }
+  .growth-meter-marker{position:absolute;top:-8px;bottom:-8px;left:64%;width:2px;background:var(--text);opacity:.3;}
+  .growth-meter-marker-label{position:absolute;top:-22px;left:64%;transform:translateX(-50%);
+    font-family:var(--mono);font-size:10px;color:var(--text-muted);white-space:nowrap;}
+  .growth-meter-end-label{position:absolute;top:50%;left:calc(64% + 8px);transform:translateY(-50%);
+    font-family:var(--display);font-weight:700;font-size:0;color:#fff;white-space:nowrap;
+    animation:meterEndLabelShow 5s ease infinite;}
+  @keyframes meterEndLabelShow{
+    0%,58%{opacity:0;font-size:0px;}
+    68%,80%{opacity:1;font-size:13px;}
+    100%{opacity:0;font-size:0px;}
+  }
+  .growth-meter-foot{display:flex;justify-content:space-between;margin-top:14px;
+    font-family:var(--mono);font-size:10.5px;color:var(--text-muted);}
 
   /* --- Panel 4: standard vs top-performer radial rings, replacing the
      bar comparison -- two animated progress dials (stroke-dashoffset
@@ -571,7 +581,15 @@ window.addEventListener('load', function(){
     .status-label{font-size:6.5px;width:38px;}
     .meter-track{height:6px;}
     .meter-row{font-size:8.5px;margin-top:6px;}
-    .trend-chart{height:42px;}
+    .growth-meter{height:26px;margin-top:8px;}
+    .growth-meter-marker-label{font-size:8.5px;top:-18px;}
+    .growth-meter-end-label{font-size:0;}
+    @keyframes meterEndLabelShow{
+      0%,58%{opacity:0;font-size:0px;}
+      68%,80%{opacity:1;font-size:10px;}
+      100%{opacity:0;font-size:0px;}
+    }
+    .growth-meter-foot{font-size:9px;margin-top:8px;}
     .roi-flow{gap:16px;}
     .roi-row{gap:6px;flex-wrap:wrap;justify-content:center;row-gap:4px;}
     .roi-coin{width:24px;height:24px;font-size:8px;}
@@ -760,22 +778,15 @@ window.addEventListener('load', function(){
                 <span class="live-dot"></span>
               </div>
               <div class="sb-panel-body">
-                <div class="trend-chart">
-                  <svg viewBox="0 0 260 80" preserveAspectRatio="none">
-                    <defs>
-                      <linearGradient id="trendFillGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#4F7F6D" stop-opacity=".32"/>
-                        <stop offset="100%" stop-color="#4F7F6D" stop-opacity=".06"/>
-                      </linearGradient>
-                    </defs>
-                    <path class="trend-area" fill="url(#trendFillGradient)"
-                      d="M0,64 C40,60 80,50 120,42 C160,34 200,20 260,6 L260,44 C200,52 160,56 120,58 C80,60 40,62 0,64 Z"/>
-                    <path class="trend-line-base" fill="none" stroke="#C9D0C8" stroke-width="2.5" stroke-linecap="round"
-                      d="M0,64 C40,62 80,60 120,58 C160,56 200,52 260,44"/>
-                    <path class="trend-line" fill="none" stroke="#264438" stroke-width="3" stroke-linecap="round"
-                      d="M0,64 C40,60 80,50 120,42 C160,34 200,20 260,6"/>
-                    <circle class="trend-dot" cx="260" cy="6" r="4.5" fill="#264438"/>
-                  </svg>
+                <div class="growth-meter">
+                  <div class="growth-meter-fill"></div>
+                  <div class="growth-meter-marker"></div>
+                  <div class="growth-meter-marker-label">Standard</div>
+                  <span class="growth-meter-end-label">+35%</span>
+                </div>
+                <div class="growth-meter-foot">
+                  <span>0</span>
+                  <span>Redesigned workflows &#8594;</span>
                 </div>
               </div>
             </div>
