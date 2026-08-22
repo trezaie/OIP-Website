@@ -428,7 +428,7 @@ window.addEventListener('load', function(){
   .fit-track{position:absolute;left:0;right:0;top:-22px;height:2px;background:var(--line);}
   .fit-pointer{position:absolute;top:-28px;width:12px;height:12px;border-radius:50%;background:var(--euc-deep);
     box-shadow:0 0 0 4px rgba(79,127,109,.18);left:16.5%;transform:translateX(-50%);
-    transition:left 1.1s cubic-bezier(.22,1.4,.36,1), top 1.1s cubic-bezier(.22,1.4,.36,1), box-shadow .4s ease;}
+    transition:left 1.9s cubic-bezier(.22,1.4,.36,1), top 1.9s cubic-bezier(.22,1.4,.36,1), box-shadow .6s ease;}
   .fit-pointer::after{content:'';position:absolute;left:50%;top:100%;width:1px;height:20px;background:var(--euc-bright);transform:translateX(-50%);opacity:.6;}
   .fit-scale.in .fit-pointer{left:var(--pointer-x,50%);box-shadow:0 0 0 7px rgba(79,127,109,.22);}
 
@@ -439,16 +439,21 @@ window.addEventListener('load', function(){
   .fit-zone.dim .fz-label{font-family:var(--mono);font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;}
   .fit-zone.dim .fz-sub{font-size:12.5px;color:var(--text-muted);margin-top:6px;}
   .fit-zone.target{background:var(--card);border:2px solid var(--line);box-shadow:none;transform:scale(.97);}
-  .fit-scale.in .fit-zone.target{border-color:var(--euc);box-shadow:0 10px 28px rgba(79,127,109,0.2);transform:scale(1);transition-delay:.65s;}
+  .fit-scale.in .fit-zone.target{border-color:var(--euc);box-shadow:0 10px 28px rgba(79,127,109,0.2);transform:scale(1);transition-delay:1.1s;}
 
   /* Solo & Micro starts looking like Growing SMBs' finished state --
-     already lit up, as if it could be the answer -- then settles back
-     to the plain dim look once the gauge sweeps past it and lands on
-     Growing SMBs, instead of just sitting dim the whole time. */
+     already lit up, bold heading text and all, as if it could be the
+     answer -- then settles back to the plain dim look once the gauge
+     sweeps past it and lands on Growing SMBs, instead of just sitting
+     dim (and small type) the whole time. */
   .fit-zone.dim.lead{opacity:1;background:var(--card);border-width:2px;border-style:solid;border-color:var(--euc);
     box-shadow:0 10px 28px rgba(79,127,109,0.2);
-    transition:background-color .6s ease,border-color .6s ease,box-shadow .6s ease;}
+    transition:background-color 1s ease,border-color 1s ease,box-shadow 1s ease;}
   .fit-scale.in .fit-zone.dim.lead{background:transparent;border-width:1px;border-style:dashed;border-color:var(--line);box-shadow:none;}
+  .fit-zone.dim.lead .fz-label{font-family:var(--display);font-weight:700;font-size:21px;color:var(--euc-deep);
+    text-transform:none;letter-spacing:normal;transition:font-size 1s ease,color 1s ease;}
+  .fit-scale.in .fit-zone.dim.lead .fz-label{font-family:var(--mono);font-weight:400;font-size:11px;color:var(--text-muted);
+    text-transform:uppercase;letter-spacing:.06em;}
   .fit-zone.target .fz-label{font-family:var(--display);font-weight:700;font-size:21px;color:var(--euc-deep);}
   .fit-zone.target .fz-sub{font-family:var(--mono);font-size:11px;color:var(--orange-deep);margin-top:6px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
 
