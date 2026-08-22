@@ -101,6 +101,15 @@
   .hero .tw-line:nth-child(2)::after{content:'';display:inline-block;width:3px;height:.85em;background:currentColor;margin-left:3px;vertical-align:-2px;animation:caretBlink .8s steps(1) infinite;}
   @keyframes typeReveal{ to{ clip-path:inset(0 0% 0 0); } }
   @keyframes caretBlink{ 50%{opacity:0;} }
+  /* Without this, a device with Reduce Motion enabled never runs the
+     reveal animation at all -- since .tw-line's un-animated resting
+     state is clip-path:inset(0 100% 0 0) (fully hidden), the headline
+     would look permanently cut off right after "...in your business?"
+     instead of just skipping the typing effect. */
+  @media(prefers-reduced-motion:reduce){
+    .hero .tw-line{clip-path:none !important;animation:none !important;}
+    .hero .tw-line::after{animation:none !important;opacity:1;}
+  }
 
 
   /* The scrolling "landscape" of AI tools -- Stripe-style understated
