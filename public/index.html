@@ -415,7 +415,7 @@ window.addEventListener('load', function(){
   #book{text-align:center;background:linear-gradient(to bottom, var(--paper), var(--ink) 18%, var(--ink) 100%);color:var(--on-ink);}
   #book .eyebrow{color:var(--gold-bright);justify-content:center;}
   #book .eyebrow::before{background:var(--euc-bright);}
-  #book h2{font-size:clamp(28px,4vw,42px);max-width:20ch;margin:14px auto 0;font-weight:600;}
+  #book h2{font-size:clamp(28px,4vw,42px);max-width:20ch;margin:14px auto 32px;font-weight:600;}
   #book .lede{color:#B4C1BC;max-width:50ch;margin:18px auto 28px;font-size:16.5px;}
 
   footer.site{border-top:1px solid var(--line-dark);padding:28px 0;font-family:var(--mono);font-size:11.5px;color:var(--on-ink-muted);background:var(--ink);}
@@ -440,6 +440,15 @@ window.addEventListener('load', function(){
   .fit-zone.dim .fz-sub{font-size:12.5px;color:var(--text-muted);margin-top:6px;}
   .fit-zone.target{background:var(--card);border:2px solid var(--line);box-shadow:none;transform:scale(.97);}
   .fit-scale.in .fit-zone.target{border-color:var(--euc);box-shadow:0 10px 28px rgba(79,127,109,0.2);transform:scale(1);transition-delay:.65s;}
+
+  /* Solo & Micro starts looking like Growing SMBs' finished state --
+     already lit up, as if it could be the answer -- then settles back
+     to the plain dim look once the gauge sweeps past it and lands on
+     Growing SMBs, instead of just sitting dim the whole time. */
+  .fit-zone.dim.lead{opacity:1;background:var(--card);border-width:2px;border-style:solid;border-color:var(--euc);
+    box-shadow:0 10px 28px rgba(79,127,109,0.2);
+    transition:background-color .6s ease,border-color .6s ease,box-shadow .6s ease;}
+  .fit-scale.in .fit-zone.dim.lead{background:transparent;border-width:1px;border-style:dashed;border-color:var(--line);box-shadow:none;}
   .fit-zone.target .fz-label{font-family:var(--display);font-weight:700;font-size:21px;color:var(--euc-deep);}
   .fit-zone.target .fz-sub{font-family:var(--mono);font-size:11px;color:var(--orange-deep);margin-top:6px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
 
@@ -624,7 +633,7 @@ window.addEventListener('load', function(){
     <div class="fit-scale" data-fit-scale>
       <div class="fit-track"></div>
       <div class="fit-pointer"></div>
-      <div class="fit-zone dim"><div class="fz-label">Solo &amp; Micro Teams</div><div class="fz-sub">DIY tools, spreadsheets, guesswork</div></div>
+      <div class="fit-zone dim lead"><div class="fz-label">Solo &amp; Micro Teams</div><div class="fz-sub">DIY tools, spreadsheets, guesswork</div></div>
       <div class="fit-zone target"><div class="fz-label">Growing SMBs</div><div class="fz-sub">Where we focus</div></div>
       <div class="fit-zone dim"><div class="fz-label">Enterprise</div><div class="fz-sub">Big-4 consulting, in-house data teams</div></div>
     </div>
