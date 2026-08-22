@@ -34,8 +34,6 @@
   .narrow{max-width:720px;margin:0 auto;padding:0 24px;}
   h1,h2,h3{font-family:var(--display);line-height:1.1;margin:0;font-weight:600;}
   .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;display:flex;align-items:center;gap:9px;}
-  .eyebrow::before{content:'';width:7px;height:7px;background:var(--euc);display:inline-block;transform:rotate(45deg);flex:none;}
-  .eyebrow.no-marker::before{display:none;}
   .on-dark .eyebrow{color:var(--gold-bright);}
 
   nav{position:sticky;top:0;z-index:60;background:rgba(237,239,234,0.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
@@ -578,11 +576,11 @@
 <header class="hero" id="top">
   <div class="ribbon-field"><div class="ribbon"></div></div>
   <div class="wrap hero-inner rv">
-    <h1 class="blend">Not sure what AI fits in your business? <span class="typewriter"><span class="tw-line">We'll show you, then turn</span><span class="tw-line">it into a strategic edge.</span></span></h1>
+    <h1 class="blend">Not sure where the right AI solution fits in your business? <span class="typewriter"><span class="tw-line">We'll show you, then turn</span><span class="tw-line">it into a strategic edge.</span></span></h1>
   </div>
   <div class="marquee-section">
     <div class="wrap">
-      <p class="marquee-label">The options are <b>endless</b>. That's the problem we solve.</p>
+      <p class="marquee-label">The options are <b>endless</b>. Let us help.</p>
       <div class="marquee-track">
         <div class="marquee-row">
           <span>ChatGPT</span><span>Copilot</span><span>Claude</span><span>Perplexity</span><span>Gemini</span><span>Midjourney</span><span>Notion AI</span><span>Zapier Agents</span><span>Harvey</span><span>GitHub Copilot</span>
@@ -813,7 +811,7 @@
 
 <section id="book">
   <div class="narrow">
-    <p class="eyebrow rv no-marker">Get started</p>
+    <p class="eyebrow rv">Get started</p>
     <h2 class="rv">Wherever you're starting, let's talk.</h2>
     <p class="lede rv">Tell us where you are, and we'll figure out the right next step together.</p>
     <a class="btn primary rv js-book-call" href="#">Book a call ↗</a>
@@ -823,7 +821,7 @@
 <div class="modal-overlay" id="bookModal" aria-hidden="true">
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <button type="button" class="modal-close" id="modalClose" aria-label="Close">&times;</button>
-    <p class="eyebrow no-marker">Get started</p>
+    <p class="eyebrow">Get started</p>
     <h2 id="modalTitle" class="modal-title">Book a call</h2>
     <p class="modal-sub">Tell us a bit about your business and we will follow up to find a time.</p>
 
