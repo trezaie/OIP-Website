@@ -105,16 +105,14 @@
 
   /* The scrolling "landscape" of AI tools -- Stripe-style understated
      marquee, framing the overwhelming number of options as the problem
-     this firm solves. Uses the same ink background as the footer at the
-     bottom of the page, bookending the hero with the site's one other
-     dark band instead of sitting on the plain paper background. */
-  .marquee-section{position:relative;z-index:1;padding:26px 0 30px;margin-top:28px;background:var(--ink);}
-  .marquee-label{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--on-ink-muted);text-align:center;margin-bottom:16px;}
-  .marquee-label b{color:var(--gold-bright);font-weight:700;}
+     this firm solves. */
+  .marquee-section{position:relative;z-index:1;padding:26px 0 30px;border-top:1px solid rgba(30,38,36,.12);margin-top:28px;}
+  .marquee-label{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text);text-align:center;margin-bottom:16px;}
+  .marquee-label b{color:var(--gold-deep);font-weight:700;}
   .marquee-track{overflow:hidden;-webkit-mask-image:linear-gradient(to right, transparent, black 8%, black 92%, transparent);mask-image:linear-gradient(to right, transparent, black 8%, black 92%, transparent);}
   .marquee-row{display:flex;width:max-content;animation:marquee 30s linear infinite;}
-  .marquee-row span{font-family:var(--display);font-weight:600;font-size:19px;color:var(--on-ink);white-space:nowrap;padding:0 24px;display:flex;align-items:center;gap:24px;opacity:.75;}
-  .marquee-row span::after{content:'';width:5px;height:5px;background:var(--euc-bright);border-radius:50%;flex:none;opacity:.7;}
+  .marquee-row span{font-family:var(--display);font-weight:600;font-size:19px;color:var(--text);white-space:nowrap;padding:0 24px;display:flex;align-items:center;gap:24px;opacity:.7;}
+  .marquee-row span::after{content:'';width:5px;height:5px;background:var(--euc);border-radius:50%;flex:none;opacity:.6;}
   @keyframes marquee{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
 
   section{padding:88px 0;}
