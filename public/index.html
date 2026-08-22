@@ -317,17 +317,32 @@ window.addEventListener('load', function(){
   /* --- Panel 4: standard vs top-performer radial rings, replacing the
      bar comparison -- two animated progress dials (stroke-dashoffset
      sweep) instead of bars. */
-  .cmp-row{display:flex;align-items:center;gap:30px;height:80px;justify-content:center;padding-top:4px;}
-  .cmp-col{display:flex;flex-direction:column;align-items:center;gap:9px;}
-  .cmp-ring{width:60px;height:60px;}
-  .cmp-ring circle{fill:none;stroke-width:6;}
-  .cmp-ring .track{stroke:var(--line);}
-  .cmp-ring .fill{stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;
-    stroke-dasharray:163;stroke-dashoffset:163;animation:ringFill 5s cubic-bezier(.3,.9,.4,1) infinite;}
-  .cmp-col.standard .cmp-ring .fill{stroke:var(--slate);--ring-target:114;}
-  .cmp-col.top .cmp-ring .fill{stroke:var(--euc-deep);--ring-target:8;}
-  @keyframes ringFill{ 0%{stroke-dashoffset:163;} 45%,80%{stroke-dashoffset:var(--ring-target);} 100%{stroke-dashoffset:163;} }
-  .cmp-col span{font-family:var(--mono);font-size:10px;color:var(--text-muted);}
+  /* ROI flow: a literal $1 in -> return out per row, arrow draws itself
+     in and the result coin pops in as it "arrives" -- reads as an actual
+     return rather than an abstract filled ring. */
+  .roi-flow{display:flex;flex-direction:column;gap:20px;}
+  .roi-row{display:flex;align-items:center;gap:12px;}
+  .roi-coin{flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-weight:700;color:var(--text-muted);background:var(--paper);
+    border:2px solid var(--line);width:38px;height:38px;font-size:11px;}
+  .roi-arrow{flex:1;position:relative;height:14px;min-width:40px;}
+  .roi-arrow svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
+  .roi-arrow path{fill:none;stroke:var(--euc);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:150;stroke-dashoffset:150;animation:roiArrowDraw 5s cubic-bezier(.3,.7,.3,1) infinite;}
+  .roi-row.top .roi-arrow path{stroke:var(--euc-deep);animation-delay:.2s;}
+  @keyframes roiArrowDraw{ 0%{stroke-dashoffset:150;} 45%,80%{stroke-dashoffset:0;} 100%{stroke-dashoffset:150;} }
+  .roi-result{flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:var(--display);font-weight:700;color:#fff;background:var(--euc);
+    width:56px;height:56px;font-size:13px;box-shadow:0 8px 18px rgba(79,127,109,.28);
+    opacity:0;transform:scale(.6);animation:roiResultPop 5s ease infinite;}
+  .roi-row.top .roi-result{background:var(--euc-deep);width:62px;height:62px;font-size:14px;box-shadow:0 10px 22px rgba(38,68,56,.32);animation-delay:.2s;}
+  @keyframes roiResultPop{
+    0%,38%{opacity:0;transform:scale(.6);}
+    55%{opacity:1;transform:scale(1.08);}
+    62%,80%{opacity:1;transform:scale(1);}
+    100%{opacity:0;transform:scale(.6);}
+  }
+  .roi-name{flex:none;font-family:var(--mono);font-size:10px;color:var(--text-muted);width:64px;}
 
   .more-link{display:inline-flex;align-items:center;gap:6px;margin-top:28px;font-family:var(--mono);font-size:13px;color:var(--euc-deep);text-decoration:none;font-weight:500;border-bottom:1px solid var(--euc);padding-bottom:2px;}
   .more-link:hover{color:var(--euc-deep);border-color:var(--gold);}
@@ -555,10 +570,13 @@ window.addEventListener('load', function(){
     .meter-track{height:6px;}
     .meter-row{font-size:8.5px;margin-top:6px;}
     .trend-chart{height:42px;}
-    .cmp-row{height:52px;gap:16px;}
-    .cmp-ring{width:40px;height:40px;}
-    .cmp-col{gap:5px;}
-    .cmp-col span{font-size:7px;}
+    .roi-flow{gap:16px;}
+    .roi-row{gap:6px;flex-wrap:wrap;justify-content:center;row-gap:4px;}
+    .roi-coin{width:24px;height:24px;font-size:8px;}
+    .roi-arrow{min-width:26px;}
+    .roi-result{width:38px;height:38px;font-size:10px;}
+    .roi-row.top .roi-result{width:42px;height:42px;font-size:11px;}
+    .roi-name{width:100%;text-align:center;font-size:9px;}
     .why-label{font-size:11px;padding:5px 12px;}
   }
 
@@ -775,38 +793,36 @@ window.addEventListener('load', function(){
             <span class="rain-col" style="left:81%;width:2px;opacity:.3;animation-duration:2.15s;background-image:repeating-linear-gradient(to bottom, var(--euc-deep) 0px, var(--euc-deep) 2px, transparent 2px, transparent 16px);"></span>
             <span class="rain-col" style="left:94%;width:2px;opacity:.4;animation-duration:1.35s;background-image:repeating-linear-gradient(to bottom, var(--euc) 0px, var(--euc) 2px, transparent 2px, transparent 16px);"></span>
           </div>
-          <div class="sb-head"><p class="sb-what">Firms that redesign their workflows have <b data-count="3" data-suffix="x">3x</b> higher odds of success.</p></div>
+          <div class="sb-head"><p class="sb-what">For every $1 invested in AI, firms see an average <b data-count="3.7" data-prefix="$" data-suffix="">$3.70</b> return.</p></div>
           <div class="sb-visual">
             <div class="sb-panel">
               <div class="float-badge good">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-                <span data-count="3" data-prefix="~" data-suffix="x">~3x</span>
+                <span data-count="3.7" data-prefix="$" data-suffix="">$3.70</span>
               </div>
               <div class="sb-panel-head">
-                <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-                <p class="sb-panel-label">Workflow redesign first</p>
+                <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M8 6.5c0-1.9 1.8-3.5 4-3.5s4 1.4 4 3c0 3-8 1.5-8 5s2 3.5 4 3.5 4-1.3 4-3.2"/></svg></div>
+                <p class="sb-panel-label">Return on AI investment</p>
                 <span class="live-dot"></span>
               </div>
               <div class="sb-panel-body">
-                <div class="cmp-row">
-                  <div class="cmp-col standard">
-                    <svg class="cmp-ring" viewBox="0 0 60 60">
-                      <circle class="track" cx="30" cy="30" r="26"/>
-                      <circle class="fill" cx="30" cy="30" r="26"/>
-                    </svg>
-                    <span>Standard</span>
+                <div class="roi-flow">
+                  <div class="roi-row">
+                    <div class="roi-coin">$1</div>
+                    <div class="roi-arrow"><svg viewBox="0 0 140 14" preserveAspectRatio="none"><path d="M0 7 H128 M118 1 L130 7 L118 13"/></svg></div>
+                    <div class="roi-result">$3.70</div>
+                    <span class="roi-name">Average</span>
                   </div>
-                  <div class="cmp-col top">
-                    <svg class="cmp-ring" viewBox="0 0 60 60">
-                      <circle class="track" cx="30" cy="30" r="26"/>
-                      <circle class="fill" cx="30" cy="30" r="26"/>
-                    </svg>
-                    <span>Top performers</span>
+                  <div class="roi-row top">
+                    <div class="roi-coin">$1</div>
+                    <div class="roi-arrow"><svg viewBox="0 0 140 14" preserveAspectRatio="none"><path d="M0 7 H128 M118 1 L130 7 L118 13"/></svg></div>
+                    <div class="roi-result">$10+</div>
+                    <span class="roi-name">Top performers</span>
                   </div>
                 </div>
               </div>
             </div>
-            <span class="sb-src">McKinsey, State of AI 2025</span>
+            <span class="sb-src">IDC / Microsoft, 2024</span>
           </div>
         </div>
       </div>
