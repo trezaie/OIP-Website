@@ -421,24 +421,50 @@ window.addEventListener('load', function(){
   footer.site{border-top:1px solid var(--line-dark);padding:28px 0;font-family:var(--mono);font-size:11.5px;color:var(--on-ink-muted);background:var(--ink);}
   .foot-in{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;}
 
-  .fit-scale{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:12px;margin:40px 0 8px;align-items:stretch;}
-  .fit-zone{border-radius:8px;padding:22px 18px;text-align:center;}
-  .fit-zone.dim{background:transparent;border:1px dashed var(--line);}
+  /* ===== Fit spectrum: a pointer sweeps in above the three zones and
+     locks onto "Growing SMBs" as the row scrolls into view, instead of
+     the zones just fading in flat. ===== */
+  .fit-scale{position:relative;display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:12px;margin:56px 0 8px;align-items:stretch;}
+  .fit-track{position:absolute;left:0;right:0;top:-22px;height:2px;background:var(--line);}
+  .fit-pointer{position:absolute;top:-28px;width:12px;height:12px;border-radius:50%;background:var(--euc-deep);
+    box-shadow:0 0 0 4px rgba(79,127,109,.18);left:16.5%;transform:translateX(-50%);
+    transition:left 1.1s cubic-bezier(.22,1.4,.36,1), box-shadow .4s ease;}
+  .fit-pointer::after{content:'';position:absolute;left:50%;top:100%;width:1px;height:20px;background:var(--euc-bright);transform:translateX(-50%);opacity:.6;}
+  .fit-scale.in .fit-pointer{left:50%;box-shadow:0 0 0 7px rgba(79,127,109,.22);}
+
+  .fit-zone{position:relative;border-radius:8px;padding:22px 18px;text-align:center;
+    transition:transform .5s cubic-bezier(.3,.7,.3,1),box-shadow .5s ease,border-color .5s ease;}
+  .fit-zone.dim{background:transparent;border:1px dashed var(--line);opacity:.55;transition:opacity .6s ease .1s;}
+  .fit-scale.in .fit-zone.dim{opacity:1;}
   .fit-zone.dim .fz-label{font-family:var(--mono);font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;}
   .fit-zone.dim .fz-sub{font-size:12.5px;color:var(--text-muted);margin-top:6px;}
-  .fit-zone.target{background:var(--card);border:2px solid var(--euc);box-shadow:0 6px 24px rgba(79,127,109,0.16);}
+  .fit-zone.target{background:var(--card);border:2px solid var(--line);box-shadow:none;transform:scale(.97);}
+  .fit-scale.in .fit-zone.target{border-color:var(--euc);box-shadow:0 10px 28px rgba(79,127,109,0.2);transform:scale(1);transition-delay:.65s;}
   .fit-zone.target .fz-label{font-family:var(--display);font-weight:700;font-size:21px;color:var(--euc-deep);}
   .fit-zone.target .fz-sub{font-family:var(--mono);font-size:11px;color:var(--orange-deep);margin-top:6px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
+
+  /* ===== Fit checklist: each checkmark draws itself in (SVG stroke
+     animation), staggered one at a time as the row scrolls into view,
+     instead of showing a static glyph all at once. ===== */
   .fit-checks{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:32px;}
   .fit-check{display:flex;gap:12px;align-items:flex-start;padding:16px 18px;background:var(--card);border:1px solid var(--line);border-radius:6px;}
-  .fit-check .mark{flex:none;width:20px;height:20px;border-radius:50%;background:var(--euc);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:1px;}
-  .fit-check p{margin:0;font-size:14.5px;color:var(--text);line-height:1.55;}
+  .fit-check .mark{flex:none;width:22px;height:22px;border-radius:50%;background:var(--paper);border:1.5px solid var(--line);
+    display:flex;align-items:center;justify-content:center;margin-top:1px;
+    transition:background .3s ease .1s,border-color .3s ease .1s;}
+  .fit-check.in .mark{background:var(--euc);border-color:var(--euc);}
+  .fit-check .mark svg{width:12px;height:12px;overflow:visible;}
+  .fit-check .mark path{fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:16;stroke-dashoffset:16;transition:stroke-dashoffset .35s ease .32s;}
+  .fit-check.in .mark path{stroke-dashoffset:0;}
+  .fit-check p{margin:0;font-size:14.5px;color:var(--text-muted);line-height:1.55;opacity:.55;transition:opacity .4s ease .1s,color .4s ease .1s;}
+  .fit-check.in p{opacity:1;color:var(--text);}
 
   .js .rv{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;}
   .js .rv.in{opacity:1;transform:none;}
 
   @media(max-width:900px){
-    .fit-scale{grid-template-columns:1fr;}
+    .fit-scale{grid-template-columns:1fr;margin-top:24px;}
+    .fit-track,.fit-pointer{display:none;}
     .fit-checks{grid-template-columns:1fr;}
     .team{grid-template-columns:1fr;}
     section{padding:64px 0;}
@@ -587,16 +613,18 @@ window.addEventListener('load', function(){
       <h2>Too small for enterprise overhead. Too careful to leave it to chance.</h2>
       <p class="sub">If this sounds like where you are, you're exactly who we built this for.</p>
     </div>
-    <div class="fit-scale rv">
+    <div class="fit-scale" data-fit-scale>
+      <div class="fit-track"></div>
+      <div class="fit-pointer"></div>
       <div class="fit-zone dim"><div class="fz-label">Solo &amp; Micro Teams</div><div class="fz-sub">DIY tools, spreadsheets, guesswork</div></div>
       <div class="fit-zone target"><div class="fz-label">Growing SMBs</div><div class="fz-sub">Where we focus</div></div>
       <div class="fit-zone dim"><div class="fz-label">Enterprise</div><div class="fz-sub">Big-4 consulting, in-house data teams</div></div>
     </div>
     <div class="fit-checks">
-      <div class="fit-check rv"><span class="mark">✓</span><p>What worked in your early days doesn't scale anymore.</p></div>
-      <div class="fit-check rv"><span class="mark">✓</span><p>Your best people are still doing work that should've been handed off years ago.</p></div>
-      <div class="fit-check rv"><span class="mark">✓</span><p>You know AI could help, you just don't have a data science team to find out where.</p></div>
-      <div class="fit-check rv"><span class="mark">✓</span><p>You need an industry expert, not a generic consultant reading from a script.</p></div>
+      <div class="fit-check" data-fit-check><span class="mark"><svg viewBox="0 0 16 16"><path d="M2.5 8.5 L6.5 12 L13.5 3.5"/></svg></span><p>What worked in your early days doesn't scale anymore.</p></div>
+      <div class="fit-check" data-fit-check><span class="mark"><svg viewBox="0 0 16 16"><path d="M2.5 8.5 L6.5 12 L13.5 3.5"/></svg></span><p>Your best people are still doing work that should've been handed off years ago.</p></div>
+      <div class="fit-check" data-fit-check><span class="mark"><svg viewBox="0 0 16 16"><path d="M2.5 8.5 L6.5 12 L13.5 3.5"/></svg></span><p>You know AI could help, you just don't have a data science team to find out where.</p></div>
+      <div class="fit-check" data-fit-check><span class="mark"><svg viewBox="0 0 16 16"><path d="M2.5 8.5 L6.5 12 L13.5 3.5"/></svg></span><p>You need an industry expert, not a generic consultant reading from a script.</p></div>
     </div>
   </div>
 </section>
@@ -978,6 +1006,36 @@ window.addEventListener('load', function(){
     },{threshold:0.35});
     steps.forEach(function(el){ stepIo.observe(el); });
   } else { steps.forEach(function(el){ el.classList.add('in'); }); }
+})();
+
+(function(){
+  var scaleEl = document.querySelector('[data-fit-scale]');
+  if(scaleEl){
+    if('IntersectionObserver' in window){
+      var scaleIo = new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          if(e.isIntersecting){ e.target.classList.add('in'); scaleIo.unobserve(e.target); }
+        });
+      }, {threshold:0.4});
+      scaleIo.observe(scaleEl);
+    } else { scaleEl.classList.add('in'); }
+  }
+
+  var checks = document.querySelectorAll('[data-fit-check]');
+  if(checks.length){
+    if('IntersectionObserver' in window){
+      var checkIo = new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          if(e.isIntersecting){
+            var i = Array.prototype.indexOf.call(checks, e.target);
+            setTimeout(function(){ e.target.classList.add('in'); }, i * 160);
+            checkIo.unobserve(e.target);
+          }
+        });
+      }, {threshold:0.5});
+      checks.forEach(function(el){ checkIo.observe(el); });
+    } else { checks.forEach(function(el){ el.classList.add('in'); }); }
+  }
 })();
 
 (function(){
