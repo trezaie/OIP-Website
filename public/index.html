@@ -959,10 +959,7 @@
   if('IntersectionObserver' in window){
     var stepIo = new IntersectionObserver(function(es){
       es.forEach(function(e){
-        if(e.isIntersecting){
-          e.target.classList.add('in');
-          stepIo.unobserve(e.target);
-        }
+        e.target.classList.toggle('in', e.isIntersecting);
       });
     },{threshold:0.35});
     steps.forEach(function(el){ stepIo.observe(el); });
