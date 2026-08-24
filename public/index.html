@@ -53,7 +53,7 @@ window.addEventListener('load', function(){
   nav{position:sticky;top:0;z-index:60;background:rgba(237,239,234,0.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
   .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;flex-wrap:nowrap;gap:16px;}
   .brand{display:flex;align-items:center;gap:9px;font-family:var(--display);font-weight:600;font-size:16px;text-decoration:none;color:var(--ink);white-space:nowrap;flex-shrink:0;}
-  .brand svg{width:24px;height:24px;flex:none;}
+  .brand img{height:28px;width:auto;flex:none;}
   .nav-links{display:flex;gap:24px;font-family:var(--mono);font-size:12px;}
   .nav-links a{text-decoration:none;color:var(--text-muted);white-space:nowrap;}
   .nav-links a:hover{color:var(--text);}
@@ -530,7 +530,7 @@ window.addEventListener('load', function(){
   nav .btn .short{display:none;}
   @media(max-width:560px){
     .brand{font-size:13.5px;gap:7px;}
-    .brand svg{width:20px;height:20px;}
+    .brand img{height:23px;}
     .wrap{padding:0 16px;}
   }
   @media(max-width:400px){
@@ -538,7 +538,7 @@ window.addEventListener('load', function(){
   }
   @media(max-width:340px){
     .brand{font-size:10px;gap:5px;}
-    .brand svg{width:17px;height:17px;}
+    .brand img{height:19px;}
     nav .btn{padding:8px 12px;}
   }
   @media(max-width:480px){
@@ -638,7 +638,7 @@ window.addEventListener('load', function(){
 
 <nav>
   <div class="wrap nav-in">
-    <a class="brand" href="#top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18A8.5 8.5 0 1 1 18 18" fill="none" stroke="#1E2624" stroke-width="2" stroke-linecap="round"/><rect x="16.2" y="16.2" width="3.6" height="3.6" fill="#4F7F6D" transform="rotate(45 18 18)"/></svg><span class="brand-text">Another AI Company</span></a>
+    <a class="brand" href="#top"><img src="logo-icon.png" alt="" aria-hidden="true"><span class="brand-text">Another AI Company</span></a>
     <div class="nav-links">
       <a href="#fit">Is this you?</a>
       <a href="#why">Why it matters</a>
