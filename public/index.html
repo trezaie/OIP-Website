@@ -637,8 +637,9 @@ window.addEventListener('load', function(){
   .form-row{margin-bottom:16px;}
   .form-row label{display:block;font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:6px;}
   .form-row .optional{text-transform:none;letter-spacing:0;font-weight:400;}
-  .form-row input,.form-row select{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:8px;font-family:var(--body);font-size:15px;color:var(--text);background:var(--paper);}
-  .form-row input:focus,.form-row select:focus{outline:2px solid var(--euc);outline-offset:1px;border-color:var(--euc);}
+  .form-row input,.form-row select,.form-row textarea{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:8px;font-family:var(--body);font-size:15px;color:var(--text);background:var(--paper);}
+  .form-row textarea{resize:vertical;min-height:72px;}
+  .form-row input:focus,.form-row select:focus,.form-row textarea:focus{outline:2px solid var(--euc);outline-offset:1px;border-color:var(--euc);}
   .modal-submit{width:100%;justify-content:center;margin-top:10px;border:none;cursor:pointer;font-size:14px;}
   .modal-submit:disabled{opacity:.6;cursor:default;}
   .modal-error{color:var(--orange-deep);font-size:13px;margin-top:12px;text-align:center;}
@@ -999,18 +1000,20 @@ window.addEventListener('load', function(){
         <input type="text" id="f-company" name="company" required>
       </div>
       <div class="form-row">
-        <label for="f-goal">What are you hoping to accomplish?</label>
-        <select id="f-goal" name="goal" required>
+        <label for="f-trigger">What prompted you to reach out now?</label>
+        <select id="f-trigger" name="trigger" required>
           <option value="" disabled selected>Select one</option>
-          <option>Save time and improve efficiency</option>
-          <option>Stay competitive and keep up with the market</option>
-          <option>Support growth or a new opportunity</option>
-          <option>Other</option>
+          <option>We're stretched thin and can't add people right now</option>
+          <option>Something specific keeps going wrong or getting missed</option>
+          <option>A client, owner, or partner is asking about our AI capability</option>
+          <option>We're growing faster than our current process can handle</option>
+          <option>We tried something already and it didn't stick</option>
+          <option>Still just exploring what's possible</option>
         </select>
       </div>
-      <div class="form-row" id="f-goal-other-row" hidden>
-        <label for="f-goal-other">Please specify</label>
-        <input type="text" id="f-goal-other" name="goal_other">
+      <div class="form-row">
+        <label for="f-first-fix">What's the process you'd fix first? <span class="optional">(optional)</span></label>
+        <textarea id="f-first-fix" name="first_fix" rows="3" placeholder="A sentence or two is plenty — no need to have it figured out."></textarea>
       </div>
       <button type="submit" class="btn primary modal-submit">Submit</button>
       <p class="modal-error" id="modalError" hidden>Something went wrong. Please try again, or email us directly.</p>
@@ -1166,18 +1169,6 @@ window.addEventListener('load', function(){
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
   });
-
-  var goalSelect = document.getElementById('f-goal');
-  var goalOtherRow = document.getElementById('f-goal-other-row');
-  var goalOtherInput = document.getElementById('f-goal-other');
-  if(goalSelect && goalOtherRow && goalOtherInput){
-    goalSelect.addEventListener('change', function(){
-      var isOther = goalSelect.value === 'Other';
-      goalOtherRow.hidden = !isOther;
-      goalOtherInput.required = isOther;
-      if(!isOther){ goalOtherInput.value = ''; }
-    });
-  }
 
   form.addEventListener('submit', function(e){
     e.preventDefault();
