@@ -1170,6 +1170,13 @@ window.addEventListener('load', function(){
     if(e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
   });
 
+  // Deep link support: a page load that already lands on #book (a link
+  // from Instagram, an email signature, a QR code, another page) should
+  // open the modal itself, not just silently no-op like a plain anchor
+  // scroll would -- the modal only used to open in response to an actual
+  // click on a .js-book-call button.
+  if(window.location.hash === '#book'){ openModal(); }
+
   form.addEventListener('submit', function(e){
     e.preventDefault();
     errorEl.hidden = true;
