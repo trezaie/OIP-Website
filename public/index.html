@@ -969,7 +969,7 @@ window.addEventListener('load', function(){
 <section id="book">
   <div class="narrow">
     <h2 class="rv">Tell us where you are, and we'll figure out the next step together.</h2>
-    <a class="btn primary rv js-book-call" href="#">Book a call ↗</a>
+    <a class="btn primary rv js-book-call" href="#">Book a discussion ↗</a>
   </div>
 </section>
 
@@ -977,7 +977,7 @@ window.addEventListener('load', function(){
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <button type="button" class="modal-close" id="modalClose" aria-label="Close">&times;</button>
     <p class="eyebrow">Get started</p>
-    <h2 id="modalTitle" class="modal-title">Book a call</h2>
+    <h2 id="modalTitle" class="modal-title">Book a discussion</h2>
     <p class="modal-sub">Tell us a bit about your business and we will follow up to find a time.</p>
 
     <form id="bookForm" action="https://formspree.io/f/mvkpqnko" method="POST">
@@ -1174,8 +1174,11 @@ window.addEventListener('load', function(){
   // from Instagram, an email signature, a QR code, another page) should
   // open the modal itself, not just silently no-op like a plain anchor
   // scroll would -- the modal only used to open in response to an actual
-  // click on a .js-book-call button.
-  if(window.location.hash === '#book'){ openModal(); }
+  // click on a .js-book-call button. ?book=1 is the same idea for links
+  // that can't carry a hash fragment (some ad platforms and trackers
+  // strip or rewrite anything after a #).
+  var params = new URLSearchParams(window.location.search);
+  if(window.location.hash === '#book' || params.get('book') === '1'){ openModal(); }
 
   form.addEventListener('submit', function(e){
     e.preventDefault();
