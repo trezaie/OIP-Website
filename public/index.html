@@ -552,7 +552,6 @@ window.addEventListener('load', function(){
   @media(max-width:1100px){
     .nav-links{display:none;}
   }
-  nav .btn .short{display:none;}
   @media(max-width:560px){
     .brand{font-size:13.5px;gap:7px;}
     .brand img{height:23px;}
@@ -565,10 +564,6 @@ window.addEventListener('load', function(){
     .brand{font-size:10px;gap:5px;}
     .brand img{height:19px;}
     nav .btn{padding:8px 12px;}
-  }
-  @media(max-width:480px){
-    nav .btn .full{display:none;}
-    nav .btn .short{display:inline;}
   }
   @media(max-width:640px){
     header.hero{padding:28px 0 0;}
@@ -670,7 +665,7 @@ window.addEventListener('load', function(){
       <a href="#why">Why it matters</a>
       <a href="#who">Who we are</a>
     </div>
-    <a class="btn primary js-book-call" href="#book"><span class="full">Book a discussion</span><span class="short">Book a call</span></a>
+    <a class="btn primary js-book-call" href="#book">Let's chat</a>
   </div>
 </nav>
 
@@ -969,7 +964,7 @@ window.addEventListener('load', function(){
 <section id="book">
   <div class="narrow">
     <h2 class="rv">Tell us where you are, and we'll figure out the next step together.</h2>
-    <a class="btn primary rv js-book-call" href="#">Book a discussion ↗</a>
+    <a class="btn primary rv js-book-call" href="#">Let's chat ↗</a>
   </div>
 </section>
 
@@ -977,7 +972,7 @@ window.addEventListener('load', function(){
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <button type="button" class="modal-close" id="modalClose" aria-label="Close">&times;</button>
     <p class="eyebrow">Get started</p>
-    <h2 id="modalTitle" class="modal-title">Book a discussion</h2>
+    <h2 id="modalTitle" class="modal-title">Let's chat</h2>
     <p class="modal-sub">Tell us a bit about your business and we will follow up to find a time.</p>
 
     <form id="bookForm" action="https://formspree.io/f/mvkpqnko" method="POST">
