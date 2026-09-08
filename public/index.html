@@ -1176,9 +1176,13 @@ window.addEventListener('load', function(){
   // scroll would -- the modal only used to open in response to an actual
   // click on a .js-book-call button. ?book=1 is the same idea for links
   // that can't carry a hash fragment (some ad platforms and trackers
-  // strip or rewrite anything after a #).
+  // strip or rewrite anything after a #). /book is the clean-URL version
+  // of the same thing, served by a vercel.json rewrite back to this same
+  // page rather than a real separate route -- Instagram's bio-link field
+  // mangles # into %23, and /book reads better in a link anyway.
   var params = new URLSearchParams(window.location.search);
-  if(window.location.hash === '#book' || params.get('book') === '1'){ openModal(); }
+  var path = window.location.pathname.replace(/\/$/, '');
+  if(window.location.hash === '#book' || params.get('book') === '1' || path === '/book'){ openModal(); }
 
   form.addEventListener('submit', function(e){
     e.preventDefault();
