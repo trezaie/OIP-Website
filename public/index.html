@@ -55,6 +55,14 @@ window.addEventListener('load', function(){
     --text:#1E2624; --text-muted:#5B6663; --on-ink:#E8ECE8; --on-ink-muted:#9DAAA5;
     --gold:#B48A4C; --gold-bright:#D2AD73; --gold-deep:#6E4F1F;
     --orange:#A54A20; --orange-bright:#E08A52; --orange-deep:#8A431B;
+    /* Semantic aliases onto the existing palette -- naming intent, not new
+       colors. Success/positive maps to the primary green already used for
+       "good" indicators and the ROI panel; warning/caution to gold, already
+       used for in-progress states; error/negative to orange-deep, already
+       used for the modal error text and "bad" float badges. */
+    --success:var(--euc-deep); --success-bg:rgba(79,127,109,.16);
+    --warning:var(--gold-deep); --warning-bg:rgba(180,138,76,.16);
+    --error:var(--orange-deep); --error-bg:rgba(165,74,32,.14);
     --display:'Onest',sans-serif; --body:'Inter',sans-serif; --mono:'IBM Plex Mono',monospace;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
