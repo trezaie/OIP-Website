@@ -84,29 +84,45 @@ window.addEventListener('load', function(){
   .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;display:flex;align-items:center;gap:9px;}
   .on-dark .eyebrow{color:var(--gold-bright);}
 
-  nav{position:sticky;top:0;z-index:60;background:rgba(237,239,234,0.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
-  .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;flex-wrap:nowrap;gap:16px;}
-  .brand{display:flex;align-items:center;gap:9px;font-family:var(--display);font-weight:600;font-size:16px;text-decoration:none;color:var(--ink);white-space:nowrap;flex-shrink:0;}
+  /* Nav rides transparent-on-dark over the hero, then solidifies to the
+     paper/blur look once the page scrolls past it -- toggled by a
+     scroll-linked .scrolled class (see script at bottom) rather than a
+     fixed pixel threshold, so it tracks the hero's real height across
+     breakpoints instead of guessing a number. */
+  nav{position:sticky;top:0;z-index:60;background:transparent;border-bottom:1px solid transparent;
+    transition:background .4s ease,border-color .4s ease,height .3s ease;}
+  nav.scrolled{background:rgba(237,239,234,0.94);backdrop-filter:blur(8px);border-bottom-color:var(--line);}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;flex-wrap:nowrap;gap:16px;transition:height .3s ease;}
+  nav.scrolled .nav-in{height:58px;}
+  /* Default (over the dark hero) reads pale; .scrolled flips both the
+     wordmark color and which logo file is shown (JS swaps the <img> src
+     since the dark-on-transparent icon would vanish against the paper
+     nav once solid). */
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--display);font-weight:600;font-size:16px;text-decoration:none;color:var(--on-ink);white-space:nowrap;flex-shrink:0;transition:color .4s ease;}
+  nav.scrolled .brand{color:var(--ink);}
   .brand img{height:28px;width:auto;flex:none;transform:translateY(-1px);}
   .nav-links{display:flex;gap:24px;font-family:var(--mono);font-size:12px;}
-  .nav-links a{text-decoration:none;color:var(--text-muted);white-space:nowrap;}
-  .nav-links a:hover{color:var(--text);}
+  .nav-links a{text-decoration:none;color:var(--on-ink-muted);white-space:nowrap;transition:color .4s ease;}
+  .nav-links a:hover{color:var(--on-ink);}
+  nav.scrolled .nav-links a{color:var(--text-muted);}
+  nav.scrolled .nav-links a:hover{color:var(--text);}
   .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;font-weight:500;padding:11px 20px;border-radius:2px;text-decoration:none;border:1px solid transparent;transition:transform .15s,background .2s;cursor:pointer;white-space:nowrap;flex-shrink:0;}
   .btn.primary{background:var(--orange);border-color:var(--orange);color:var(--paper);}
   .btn.primary:hover{transform:translateY(-1px);background:var(--orange-deep);border-color:var(--orange-deep);}
   nav .btn{padding:8px 16px;font-size:12px;}
 
-  /* ===== Hero: a flowing color ribbon behind blend-mode text, instead
-     of a white card next to a static graphic. Text is white with
-     mix-blend-mode:difference -- reads dark against the pale hero
-     background, then visibly shifts to inverted hues wherever it
-     crosses the ribbon as it drifts. isolation:isolate on header.hero
-     scopes that blend to composite against the ribbon specifically. An
-     explicit paper background on the hero (rather than inheriting the
-     page's ink-to-paper fade) keeps that contrast math predictable
-     regardless of how tall the hero content gets -- the dark "ink"
-     opening now reads on the nav bar only. ===== */
-  header.hero{position:relative;overflow:hidden;isolation:isolate;background:var(--paper);padding:40px 0 0;}
+  /* ===== Hero: full-bleed dark stage (was pale paper) so the opening
+     screen reads as a deliberate, confident statement instead of
+     blending into the rest of the page -- the ink-to-paper fade that
+     used to happen across the whole hero now happens right at its
+     bottom edge instead, a hard cut into the next section. A flowing
+     color ribbon drifts behind blend-mode text: text is on-ink pale
+     with mix-blend-mode:difference, shifting to inverted hues wherever
+     it crosses the ribbon. isolation:isolate on header.hero scopes that
+     blend to composite against the ribbon specifically. ===== */
+  header.hero{position:relative;overflow:hidden;isolation:isolate;
+    background:linear-gradient(165deg, var(--ink) 0%, var(--ink-2) 60%, #1A2422 100%);
+    padding:40px 0 0;}
   .ribbon-field{position:absolute;inset:0;overflow:hidden;z-index:0;pointer-events:none;}
   .ribbon{position:absolute;top:-50%;right:-5%;width:42%;height:220%;
     background:linear-gradient(158deg, var(--euc) 0%, var(--gold) 38%, var(--orange-bright) 62%, var(--orange) 82%, var(--gold-bright) 100%);
@@ -114,11 +130,25 @@ window.addEventListener('load', function(){
     -webkit-mask-image:linear-gradient(90deg, transparent 0%, black 35%, black 65%, transparent 100%);
     mask-image:linear-gradient(90deg, transparent 0%, black 35%, black 65%, transparent 100%);
     filter:blur(20px);
+    opacity:.9;
     animation:ribbonDrift 16s ease-in-out infinite;}
   @keyframes ribbonDrift{
     0%,100%{ transform:rotate(-14deg) translate(0,0); }
     50%{ transform:rotate(-11deg) translate(-3%, 2%); }
   }
+  /* Oversized ghost wordmark -- ties the hero back to the brand at a
+     scale nothing else on the page uses, and breaks the otherwise
+     dead-centered hero composition by anchoring hard to the right edge,
+     mostly off-canvas. Outline-only (transparent fill + a pale stroke)
+     so it reads as a watermark, not competing text; the low-opacity
+     fill is a fallback for browsers without -webkit-text-stroke
+     support, where it still shows as a faint tint instead of vanishing.
+     Hidden on mobile (see media query below) -- at narrow widths there
+     is no room for it to sit off-canvas without overlapping the copy. */
+  .hero-ghost{position:absolute;top:46%;right:-4%;transform:translateY(-50%);z-index:0;
+    font-family:var(--display);font-weight:800;font-size:clamp(180px,26vw,420px);line-height:1;
+    letter-spacing:-.03em;color:rgba(232,236,232,.05);-webkit-text-stroke:1.5px rgba(232,236,232,.12);
+    pointer-events:none;user-select:none;}
   /* No explicit z-index here: that would give hero-inner its own
      stacking context, and the mix-blend-mode text inside would only
      ever see its own (transparent) background instead of the ribbon
@@ -127,7 +157,8 @@ window.addEventListener('load', function(){
      z-index:auto keeps it paint-ordered above the ribbon (later in the
      DOM) without trapping the blend. */
   .hero-inner{position:relative;padding-bottom:20px;}
-  .hero .blend{color:#fff;mix-blend-mode:difference;}
+  .hero .eyebrow{color:var(--gold-bright);margin-bottom:6px;}
+  .hero .blend{color:var(--on-ink);mix-blend-mode:difference;}
   /* Floor lowered from 32px to 24px: at 32px, the two hardcoded
      typewriter lines below measure wider than their column on a real
      375-390px phone (confirmed via direct measurement -- 382px and
@@ -167,13 +198,14 @@ window.addEventListener('load', function(){
 
   /* The scrolling "landscape" of AI tools -- Stripe-style understated
      marquee, framing the overwhelming number of options as the problem
-     this firm solves. */
-  .marquee-section{position:relative;z-index:1;padding:26px 0 30px;border-top:1px solid rgba(30,38,36,.12);margin-top:28px;}
-  .marquee-label{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text);text-align:center;margin-bottom:16px;}
-  .marquee-label b{color:var(--gold-deep);font-weight:700;}
+     this firm solves. Recolored for the hero's dark background (was
+     tuned for the old pale hero). */
+  .marquee-section{position:relative;z-index:1;padding:26px 0 30px;border-top:1px solid rgba(232,236,232,.14);margin-top:28px;}
+  .marquee-label{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--on-ink);text-align:center;margin-bottom:16px;}
+  .marquee-label b{color:var(--gold-bright);font-weight:700;}
   .marquee-track{overflow:hidden;-webkit-mask-image:linear-gradient(to right, transparent, black 8%, black 92%, transparent);mask-image:linear-gradient(to right, transparent, black 8%, black 92%, transparent);}
   .marquee-row{display:flex;width:max-content;animation:marquee 30s linear infinite;}
-  .marquee-row span{font-family:var(--display);font-weight:600;font-size:19px;color:var(--text);white-space:nowrap;padding:0 24px;display:flex;align-items:center;gap:24px;opacity:.7;}
+  .marquee-row span{font-family:var(--display);font-weight:600;font-size:19px;color:var(--on-ink);white-space:nowrap;padding:0 24px;display:flex;align-items:center;gap:24px;opacity:.7;}
   .marquee-row span::after{content:'';width:5px;height:5px;background:var(--euc);border-radius:50%;flex:none;opacity:.6;}
   @keyframes marquee{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
 
@@ -592,11 +624,16 @@ window.addEventListener('load', function(){
        phone widths that same 42% is wide enough for the headline to sit
        mostly on top of it, and mix-blend-mode:difference against the
        ribbon's mid-tones washes the text out to near-invisible. Drop
-       the blend for a plain, always-legible dark headline on mobile,
-       and narrow/fade the ribbon so it reads as a soft accent instead
-       of dominating the screen. */
-    .hero .blend{color:var(--text);mix-blend-mode:normal;}
+       the blend for a plain, always-legible pale headline on mobile
+       (the hero background is dark now, so this must stay pale, not
+       flip to dark text the way it did against the old pale hero), and
+       narrow/fade the ribbon so it reads as a soft accent instead of
+       dominating the screen. The ghost wordmark has no room to sit
+       off-canvas at this width without overlapping the copy, so it's
+       hidden entirely rather than shrunk. */
+    .hero .blend{color:var(--on-ink);mix-blend-mode:normal;}
     .ribbon{width:60%;right:-25%;opacity:.5;}
+    .hero-ghost{display:none;}
 
     /* Stat cards stay 2-up (each why-block's own pair side by side)
        instead of stacking to one column -- everything inside is scaled
@@ -677,7 +714,7 @@ window.addEventListener('load', function(){
 
 <nav>
   <div class="wrap nav-in">
-    <a class="brand" href="#top"><img src="logo-icon.png" alt="" aria-hidden="true"><span class="brand-text">Another AI Company</span></a>
+    <a class="brand" href="#top"><img id="navLogo" src="logo-icon-white.png" alt="" aria-hidden="true"><span class="brand-text">Another AI Company</span></a>
     <div class="nav-links">
       <a href="#fit">Is this you?</a>
       <a href="#why">Why it matters</a>
@@ -689,7 +726,9 @@ window.addEventListener('load', function(){
 
 <header class="hero" id="top">
   <div class="ribbon-field"><div class="ribbon"></div></div>
+  <div class="hero-ghost" aria-hidden="true">AI</div>
   <div class="wrap hero-inner rv">
+    <p class="eyebrow">AI implementation, wherever you're starting from</p>
     <h1 class="blend">Not sure where the right AI solution fits in your business? <span class="typewriter"><span class="tw-line">We'll show you, then turn</span><span class="tw-line">it into a strategic edge.</span></span></h1>
   </div>
   <div class="marquee-section">
@@ -1046,6 +1085,27 @@ window.addEventListener('load', function(){
 </footer>
 
 <script>
+(function(){
+  // Nav rides transparent over the dark hero, then solidifies to the
+  // paper/blur look once the page scrolls past it -- toggled against
+  // the hero's own actual bottom edge (not a guessed pixel number) so
+  // it tracks correctly across every breakpoint's different hero height.
+  var navEl = document.querySelector('nav');
+  var heroEl = document.getElementById('top');
+  var navLogo = document.getElementById('navLogo');
+  if(navEl && heroEl){
+    function syncNav(){
+      var heroBottom = heroEl.getBoundingClientRect().bottom;
+      var scrolled = heroBottom <= navEl.offsetHeight + 4;
+      navEl.classList.toggle('scrolled', scrolled);
+      if(navLogo) navLogo.src = scrolled ? 'logo-icon.png' : 'logo-icon-white.png';
+    }
+    syncNav();
+    window.addEventListener('scroll', syncNav, {passive:true});
+    window.addEventListener('resize', syncNav);
+  }
+})();
+
 (function(){
   // Static text content is already the real final value (see data-count
   // spans below), so no-JS and pre-animation states both show correct
