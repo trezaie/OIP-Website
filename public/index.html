@@ -544,6 +544,13 @@ window.addEventListener('load', function(){
   .foot-in{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;}
   .foot-brand{display:inline-flex;align-items:center;gap:8px;}
   .foot-brand img{height:18px;width:auto;flex:none;}
+  .foot-links{display:flex;gap:22px;}
+  .foot-links a{position:relative;color:var(--on-ink-muted);text-decoration:none;padding-bottom:2px;transition:color .2s ease;}
+  .foot-links a::after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;
+    transform:scaleX(0);transform-origin:left center;transition:transform .3s cubic-bezier(.3,.7,.3,1);}
+  .foot-links a:hover{color:var(--on-ink);}
+  .foot-links a:hover::after{transform:scaleX(1);}
+  @media(prefers-reduced-motion:reduce){ .foot-links a::after{transition:none;} }
 
   /* ===== Fit spectrum: a pointer sweeps in above the three zones and
      locks onto "Growing SMBs" as the row scrolls into view, instead of
@@ -1101,6 +1108,11 @@ window.addEventListener('load', function(){
 <footer class="site">
   <div class="wrap foot-in">
     <span class="foot-brand"><img src="logo-icon-white.png" alt="" aria-hidden="true">© 2026 Another AI Company</span>
+    <nav class="foot-links">
+      <a href="#fit">Is this you?</a>
+      <a href="#why">Why it matters</a>
+      <a href="#who">Who we are</a>
+    </nav>
   </div>
 </footer>
 
