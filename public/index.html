@@ -154,23 +154,6 @@ window.addEventListener('load', function(){
     0%,100%{ transform:rotate(-14deg) translate(0,0); }
     50%{ transform:rotate(-11deg) translate(-3%, 2%); }
   }
-  /* Oversized ghost wordmark -- ties the hero back to the brand at a
-     scale nothing else on the page uses, and breaks the otherwise
-     dead-centered hero composition by anchoring hard to the right edge,
-     mostly off-canvas. Outline-only (transparent fill + a pale stroke)
-     so it reads as a watermark, not competing text; the low-opacity
-     fill is a fallback for browsers without -webkit-text-stroke
-     support, where it still shows as a faint tint instead of vanishing.
-     Hidden on mobile (see media query below) -- at narrow widths there
-     is no room for it to sit off-canvas without overlapping the copy. */
-  /* Sized and positioned to sit fully on-canvas (was cropped off the
-     right edge at a larger size) -- still anchored to the right side of
-     the hero, just pulled inward so both characters clear the viewport
-     at every width down to the point it hides for mobile. */
-  .hero-ghost{position:absolute;top:45%;right:4%;transform:translateY(-50%);z-index:0;
-    font-family:var(--display);font-weight:800;font-size:clamp(120px,14vw,220px);line-height:1;
-    letter-spacing:-.02em;color:rgba(232,236,232,.05);-webkit-text-stroke:1.5px rgba(232,236,232,.12);
-    pointer-events:none;user-select:none;}
   /* No explicit z-index here: that would give hero-inner its own
      stacking context, and the mix-blend-mode text inside would only
      ever see its own (transparent) background instead of the ribbon
@@ -667,12 +650,9 @@ window.addEventListener('load', function(){
        (the hero background is dark now, so this must stay pale, not
        flip to dark text the way it did against the old pale hero), and
        narrow/fade the ribbon so it reads as a soft accent instead of
-       dominating the screen. The ghost wordmark has no room to sit
-       off-canvas at this width without overlapping the copy, so it's
-       hidden entirely rather than shrunk. */
+       dominating the screen. */
     .hero .blend{color:var(--on-ink);mix-blend-mode:normal;}
     .ribbon{width:60%;right:-25%;opacity:.5;}
-    .hero-ghost{display:none;}
 
     /* Stat cards stay 2-up (each why-block's own pair side by side)
        instead of stacking to one column -- everything inside is scaled
@@ -767,7 +747,6 @@ window.addEventListener('load', function(){
 
 <header class="hero" id="top">
   <div class="ribbon-field"><div class="ribbon"></div></div>
-  <div class="hero-ghost" aria-hidden="true">AI</div>
   <div class="wrap hero-inner rv">
     <p class="eyebrow">AI implementation, wherever you're starting from</p>
     <h1 class="blend">Not sure where the right AI solution fits in your business? <span class="typewriter"><span class="tw-line">We'll show you, then turn</span><span class="tw-line">it into a strategic edge.</span></span></h1>
