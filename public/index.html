@@ -256,12 +256,12 @@ window.addEventListener('load', function(){
 
   /* ===== Cuberto-style scroll-reveal accordion (replaces the badge/path
      timeline). Each row is a plain light collapsed strip (icon + title +
-     number); once it scrolls into view it fills to our ink color, a
-     brand-colored glow fades in behind it, and its description reveals
+     number); whichever one is currently in view fills to our ink color,
+     a brand-colored glow fades in behind it, and its description reveals
      via a CSS Grid 0fr->1fr row-height animation (the same trick Cuberto
-     uses) instead of JS height measurement. It stays filled once
-     triggered -- it does not collapse back on scroll-out. ===== */
-  .steps{margin-top:40px;display:flex;flex-direction:column;gap:14px;}
+     uses) instead of JS height measurement -- only ever one step dark at
+     a time, not an accumulating stack of them. ===== */
+  .steps{margin-top:40px;display:flex;flex-direction:column;gap:10px;}
   .step{position:relative;border-radius:18px;overflow:hidden;isolation:isolate;
     background:var(--card);border:1px solid var(--line);
     transition:background .6s ease,border-color .6s ease;}
@@ -270,14 +270,14 @@ window.addEventListener('load', function(){
     background:radial-gradient(circle at 85% 100%, var(--euc) 0%, transparent 60%);
     transition:opacity .8s ease .1s;}
   .step.in .step-glow{opacity:.55;}
-  .step-head{position:relative;z-index:1;display:flex;align-items:center;gap:16px;padding:26px 28px;}
+  .step-head{position:relative;z-index:1;display:flex;align-items:center;gap:16px;padding:22px 26px;}
   /* A real quiet numeral, not a tiny label -- on a wide desktop card the
      old 13px "01" just left the whole right half of the row empty.
      Sized up on desktop only (see min-width:901px below); mobile keeps
      the original small label, where the card is already narrow. */
   .step-num{margin-left:auto;font-family:var(--mono);font-weight:500;font-size:13px;color:var(--text-muted);opacity:.6;transition:color .6s ease;}
   .step.in .step-num{color:var(--on-ink-muted);}
-  .step-icon{width:40px;height:40px;border-radius:50%;background:var(--paper);color:var(--euc-deep);
+  .step-icon{width:36px;height:36px;border-radius:50%;background:var(--paper);color:var(--euc-deep);
     display:flex;align-items:center;justify-content:center;flex:none;transition:background .6s ease,color .6s ease;}
   .step-icon svg{width:18px;height:18px;}
   .step.in .step-icon{background:rgba(157,196,179,.16);color:var(--euc-bright);}
@@ -288,7 +288,7 @@ window.addEventListener('load', function(){
     transition:grid-template-rows .7s cubic-bezier(.3,.7,.3,1);}
   .step.in .step-accordion{grid-template-rows:1fr;}
   .step-content{overflow:hidden;}
-  .step-text{padding:0 28px 28px 84px;font-size:16px;line-height:1.6;color:var(--text-muted);margin:0;max-width:52ch;
+  .step-text{padding:0 26px 24px 78px;font-size:16px;line-height:1.6;color:var(--text-muted);margin:0;max-width:52ch;
     opacity:0;transform:translateY(6px);transition:opacity .5s ease .15s,transform .5s ease .15s;}
   .step.in .step-text{opacity:1;transform:none;color:rgba(232,236,232,.82);}
 
@@ -436,14 +436,22 @@ window.addEventListener('load', function(){
      card actually has. Bumps body text in the fit-check, split-panel,
      approach-step and team cards; mobile sizes above are untouched. */
   @media(min-width:901px){
-    .fit-check p{font-size:15.5px;}
-    .why-lbl{font-size:16px;}
+    /* Size alone didn't fix "feels small" -- these were reading thin
+       (regular weight, muted color) next to bolder neighbors, not
+       literally undersized. Weight is doing most of the work here, the
+       size bumps are modest on top of that. */
+    .fit-check p{font-size:15px;font-weight:500;}
+    .why-lbl{font-size:15.5px;font-weight:500;}
     .why-src{font-size:11px;}
-    .person p{font-size:15.5px;}
-    .step-title{font-size:21px;}
-    .step-text{font-size:17.5px;}
-    .step-num{font-size:clamp(34px,4vw,54px);opacity:.3;}
-    .step.in .step-num{opacity:.55;}
+    .person p{font-size:15px;font-weight:500;}
+    .step-title{font-size:20px;}
+    .step-text{font-size:16.5px;font-weight:500;}
+    /* Dialed back from an earlier pass that overcorrected -- a numeral
+       this large on all five stacked cards was a real contributor to
+       the section feeling heavy, on top of the stacking-dark bug fixed
+       above. Present, not dominant. */
+    .step-num{font-size:clamp(22px,2.4vw,28px);opacity:.35;}
+    .step.in .step-num{opacity:.5;}
   }
   @media(max-width:1100px){
     .nav-links{display:none;}
@@ -863,21 +871,16 @@ window.addEventListener('load', function(){
   var steps = document.querySelectorAll('[data-step]');
   if(!steps.length) return;
   if('IntersectionObserver' in window){
-    /* Steps only collapse back when scrolling up (back toward the top
-       of the page) and a step scrolls out the bottom -- continuing to
-       scroll down past a step (it exits the top, on the way to later
-       content) leaves it expanded instead of resetting it. */
-    var lastY = window.scrollY;
-    var scrollDir = 'down';
-    window.addEventListener('scroll', function(){
-      var y = window.scrollY;
-      if(y !== lastY){ scrollDir = y < lastY ? 'up' : 'down'; lastY = y; }
-    }, {passive:true});
-
+    /* Only the step currently in view goes dark -- toggled both ways by
+       intersection, not just added and left on scroll-down. The earlier
+       version only ever removed 'in' when scrolling back up, so reading
+       straight down the list left every step dark at once: five stacked
+       near-black blocks competing for attention instead of one at a
+       time. A real accordion highlights the current item, not every
+       item you've already passed. */
     var stepIo = new IntersectionObserver(function(es){
       es.forEach(function(e){
-        if(e.isIntersecting){ e.target.classList.add('in'); }
-        else if(scrollDir === 'up'){ e.target.classList.remove('in'); }
+        e.target.classList.toggle('in', e.isIntersecting);
       });
     },{threshold:0.35});
     steps.forEach(function(el){ stepIo.observe(el); });
