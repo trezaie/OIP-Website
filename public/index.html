@@ -134,10 +134,9 @@ window.addEventListener('load', function(){
      blending into the rest of the page -- the ink-to-paper fade that
      used to happen across the whole hero now happens right at its
      bottom edge instead, a hard cut into the next section. A flowing
-     color ribbon drifts behind blend-mode text: text is on-ink pale
-     with mix-blend-mode:difference, shifting to inverted hues wherever
-     it crosses the ribbon. isolation:isolate on header.hero scopes that
-     blend to composite against the ribbon specifically. ===== */
+     color ribbon drifts behind the headline (flat on-ink pale text --
+     see .hero .blend below for why this is no longer mix-blend-mode).
+     ===== */
   header.hero{position:relative;overflow:hidden;isolation:isolate;
     background:linear-gradient(165deg, var(--ink) 0%, var(--ink-2) 60%, #1A2422 100%);
     padding:40px 0 0;}
