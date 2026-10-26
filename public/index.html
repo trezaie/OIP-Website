@@ -241,9 +241,17 @@ window.addEventListener('load', function(){
   .why-side.payoff .why-stat + .why-stat{border-color:var(--line);}
   .why-side.cost .sb-bignum{color:var(--orange-bright);}
   .why-side.payoff .sb-bignum{color:var(--euc-deep);}
-  .why-lbl{margin:2px 0 0;font-size:15px;line-height:1.5;max-width:34ch;}
-  .why-side.cost .why-lbl{color:var(--on-ink-muted);}
-  .why-side.payoff .why-lbl{color:var(--text-muted);}
+  /* Full-contrast text, not the muted/secondary token -- this sentence
+     is the actual content of the card (what the stat means), not a
+     caption, so it was reading noticeably harder to parse than the
+     bold number above it even though the color technically cleared
+     WCAG AA. var(--on-ink)/var(--text) roughly double the contrast
+     ratio over the muted tokens on both sides. The small source
+     citation below (why-src) is the one thing that should stay muted --
+     that really is secondary. */
+  .why-lbl{margin:2px 0 0;font-size:15px;line-height:1.55;max-width:36ch;}
+  .why-side.cost .why-lbl{color:var(--on-ink);}
+  .why-side.payoff .why-lbl{color:var(--text);}
   .why-src{display:block;margin-top:6px;font-family:var(--mono);font-size:10.5px;
     text-transform:uppercase;letter-spacing:.05em;opacity:.75;}
 
@@ -441,7 +449,7 @@ window.addEventListener('load', function(){
        literally undersized. Weight is doing most of the work here, the
        size bumps are modest on top of that. */
     .fit-check p{font-size:15px;font-weight:500;}
-    .why-lbl{font-size:15.5px;font-weight:500;}
+    .why-lbl{font-size:16.5px;font-weight:500;}
     .why-src{font-size:11px;}
     .person p{font-size:15px;font-weight:500;}
     .step-title{font-size:20px;}
