@@ -289,10 +289,11 @@ window.addEventListener('load', function(){
   .step.in .step-text{opacity:1;transform:none;color:rgba(232,236,232,.82);}
 
   /* Cards (not bare text) so the three founders carry the same visual
-     weight as the step cards elsewhere on the page, plus a
-     gentle ascending stagger on desktop (each card sits a little higher
-     than the last) -- the one deliberate break from the page's
-     otherwise-centered, evenly-spaced grid pattern. */
+     weight as the step cards elsewhere on the page. An earlier version
+     staggered these vertically (each card sitting a little higher than
+     the last) as a deliberate asymmetry -- on a real laptop screen that
+     just read as the row being misaligned, not as a choice, so all
+     three now sit on the same baseline. */
   .team{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:40px 0;align-items:start;}
   .person{position:relative;padding:28px 24px 26px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;}
   .person::before{content:'';position:absolute;top:0;left:0;height:3px;width:100%;background:var(--euc);transform-origin:left center;transform:scaleX(1);transition:transform .6s cubic-bezier(.3,0,.2,1);}
@@ -302,10 +303,6 @@ window.addEventListener('load', function(){
   .person-mark.c-gold{background:rgba(180,138,76,.14);color:var(--gold-deep);border-color:var(--gold);}
   .person-mark.c-orange{background:rgba(165,74,32,.14);color:var(--orange-deep);border-color:var(--orange);}
   .person h3{font-size:17px;margin:0 0 6px;font-weight:700;}
-  @media(min-width:901px){
-    .team .person:nth-child(2){margin-top:-14px;}
-    .team .person:nth-child(3){margin-top:-28px;}
-  }
 
   /* Austin -> Nathan -> Tim, each in a distinct motion from the timeline
      above: the top border draws left-to-right first, then the mark,
