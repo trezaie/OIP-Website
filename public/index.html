@@ -817,18 +817,21 @@ window.addEventListener('load', function(){
 
 <script>
 (function(){
-  // Nav rides transparent over the dark hero, then solidifies to the
-  // paper/blur look once the page scrolls past it -- toggled against
-  // the hero's own actual bottom edge (not a guessed pixel number) so
-  // it tracks correctly across every breakpoint's different hero height.
+  // Nav rides transparent over the dark hero at rest, then solidifies to
+  // the paper/blur look as soon as real scrolling starts. This used to
+  // wait for the entire hero to clear the nav before solidifying -- the
+  // hero's own headline is tall enough that for a long stretch of
+  // scrolling, it was passing directly underneath a still-transparent
+  // nav, so the nav's own text sat visibly overlapping the headline
+  // text behind it. A small fixed scroll distance, independent of hero
+  // height, means the nav opaques almost immediately once you move,
+  // well before any hero content reaches it.
   var navEl = document.querySelector('nav');
-  var heroEl = document.getElementById('top');
   var navLogo = document.getElementById('navLogo');
   var progressEl = document.getElementById('scrollProgress');
   function syncNav(){
-    if(navEl && heroEl){
-      var heroBottom = heroEl.getBoundingClientRect().bottom;
-      var scrolled = heroBottom <= navEl.offsetHeight + 4;
+    if(navEl){
+      var scrolled = window.scrollY > 24;
       navEl.classList.toggle('scrolled', scrolled);
       if(navLogo) navLogo.src = scrolled ? 'logo-icon.png' : 'logo-icon-white.png';
     }
