@@ -154,16 +154,20 @@ window.addEventListener('load', function(){
     0%,100%{ transform:rotate(-14deg) translate(0,0); }
     50%{ transform:rotate(-11deg) translate(-3%, 2%); }
   }
-  /* No explicit z-index here: that would give hero-inner its own
-     stacking context, and the mix-blend-mode text inside would only
-     ever see its own (transparent) background instead of the ribbon
-     painted behind it in header.hero's isolated context -- rendering as
-     plain white instead of blending. Staying position:relative with
-     z-index:auto keeps it paint-ordered above the ribbon (later in the
-     DOM) without trapping the blend. */
   .hero-inner{position:relative;padding-bottom:20px;}
   .hero .eyebrow{color:var(--gold-bright);margin-bottom:6px;}
-  .hero .blend{color:var(--on-ink);mix-blend-mode:difference;}
+  /* Used to be mix-blend-mode:difference against the ribbon, so the
+     headline would shift hue wherever it crossed it -- a nice detail,
+     but "difference" blending against anything but a pure-black
+     background inherently desaturates the result: sampling the actual
+     rendered pixels over the plain (non-ribbon) part of the hero showed
+     a muddy rgb(202,198,196) taupe, not the clean near-white var(--on-
+     ink) value the color is set to. Numerically that still passes
+     contrast (~9:1), which is why it didn't look "broken", just soft --
+     but soft is exactly wrong for the page's main headline. Flat color,
+     no blend, same as the mobile breakpoint already did for the same
+     reason. */
+  .hero .blend{color:var(--on-ink);}
   /* Floor lowered from 32px to 24px: at 32px, the two hardcoded
      typewriter lines below measure wider than their column on a real
      375-390px phone (confirmed via direct measurement -- 382px and
@@ -505,16 +509,10 @@ window.addEventListener('load', function(){
   }
   @media(max-width:767px){
     .marquee-row span{font-size:16px;padding:0 18px;gap:18px;}
-    /* The ribbon is calibrated against a wide desktop canvas -- at
-       phone widths that same 42% is wide enough for the headline to sit
-       mostly on top of it, and mix-blend-mode:difference against the
-       ribbon's mid-tones washes the text out to near-invisible. Drop
-       the blend for a plain, always-legible pale headline on mobile
-       (the hero background is dark now, so this must stay pale, not
-       flip to dark text the way it did against the old pale hero), and
-       narrow/fade the ribbon so it reads as a soft accent instead of
-       dominating the screen. */
-    .hero .blend{color:var(--on-ink);mix-blend-mode:normal;}
+    /* The ribbon is calibrated against a wide desktop canvas -- at phone
+       widths that same 42% is wide enough for the headline to sit
+       mostly on top of it, so narrow/fade it to read as a soft accent
+       instead of dominating the screen. */
     .ribbon{width:60%;right:-25%;opacity:.5;}
 
     /* Stacks dark-over-light instead of side-by-side, matching every
