@@ -98,9 +98,13 @@ window.addEventListener('load', function(){
     transform:scaleX(0);transform-origin:left center;}
   @media(prefers-reduced-motion:reduce){ .scroll-progress{display:none;} }
 
+  /* Background transition shortened from .4s to .15s, and the scrolled
+     background is now fully opaque (was rgba(...,.94), a 6% see-through
+     residual that combined with the slower fade to make page content
+     visibly show through the nav while scrolling, not just at rest). */
   nav{position:sticky;top:0;z-index:60;background:transparent;border-bottom:1px solid transparent;
-    transition:background .4s ease,border-color .4s ease,height .3s ease;}
-  nav.scrolled{background:rgba(237,239,234,0.94);backdrop-filter:blur(8px);border-bottom-color:var(--line);}
+    transition:background .15s ease,border-color .15s ease,height .3s ease;}
+  nav.scrolled{background:var(--paper);backdrop-filter:blur(8px);border-bottom-color:var(--line);}
   .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;flex-wrap:nowrap;gap:16px;transition:height .3s ease;}
   nav.scrolled .nav-in{height:58px;}
   /* Default (over the dark hero) reads pale; .scrolled flips both the
