@@ -239,7 +239,30 @@ window.addEventListener('load', function(){
   .why-stat + .why-stat{padding-top:22px;border-top:1px solid;}
   .why-side.cost .why-stat + .why-stat{border-color:rgba(232,236,232,.14);}
   .why-side.payoff .why-stat + .why-stat{border-color:var(--line);}
-  .why-side.cost .sb-bignum{color:var(--orange-bright);}
+  /* This base rule went missing when the stat-card CSS was removed in
+     favor of the split panel -- the two color overrides below survived,
+     but with no base declaration the numbers were silently rendering as
+     plain 17px/400 body text (confirmed via computed style on the live
+     site) instead of the intended oversized, heavy display numeral.
+     That's almost certainly the real "hard to read" cause, not a color
+     choice. Restored with the original sizing/weight. */
+  .sb-bignum{font-family:var(--display);font-weight:800;font-size:clamp(48px,6.6vw,76px);
+    line-height:.92;letter-spacing:-.02em;margin:0 0 8px;color:var(--gold-deep);
+    font-variant-numeric:tabular-nums;display:inline-block;}
+  @keyframes numPunch{
+    0%{transform:scale(1);}
+    40%{transform:scale(1.14);}
+    65%{transform:scale(.96);}
+    100%{transform:scale(1);}
+  }
+  .sb-bignum.punch{animation:numPunch .5s cubic-bezier(.3,.7,.3,1);}
+  @media(prefers-reduced-motion:reduce){ .sb-bignum.punch{animation:none;} }
+  /* Orange-bright (#E08A52) on ink only measures ~5.8:1 contrast -- legal
+     but visibly weaker than the green side's ~10.7:1 (euc-deep on
+     white), which is exactly the asymmetry flagged. This is orange-
+     bright lightened toward white by about a quarter, which brings it to
+     ~7.6:1 (crosses WCAG AAA) while still reading as orange, not peach. */
+  .why-side.cost .sb-bignum{color:#E8A77D;}
   .why-side.payoff .sb-bignum{color:var(--euc-deep);}
   /* Full-contrast text, not the muted/secondary token -- this sentence
      is the actual content of the card (what the stat means), not a
